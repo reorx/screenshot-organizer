@@ -1,0 +1,16 @@
+name: ScreenshotOrganizer
+options:
+  bundleIdPrefix: com.reorx
+  deploymentTarget:
+    macOS: "13.0"
+targets:
+  ScreenshotOrganizer:
+    type: application
+    platform: macOS
+    sources:
+      - ScreenshotOrganizer
+    settings:
+      base:
+        INFOPLIST_FILE: ScreenshotOrganizer/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.reorx.ScreenshotOrganizer
+        CODE_SIGN_ENTITLEMENTS: ScreenshotOrganizer/ScreenshotOrganizer.entitlements
