@@ -1,5 +1,13 @@
 import Foundation
 
+
+enum FileMonitorError: Error {
+    case directoryNotFound
+    case fileSystemError(String)
+    case invalidScreenshot
+    case moveFailed(String)
+}
+
 class FileMonitor {
     private let directoryURL: URL
     private var directoryMonitor: DispatchSourceFileSystemObject?
@@ -13,30 +21,16 @@ class FileMonitor {
 
     init(directoryURL: URL) {
         self.directoryURL = directoryURL
-        setupNotifications()
     }
 
-    private func setupNotifications() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleOrganizeNow),
-            name: Notification.Name("OrganizeNow"),
-            object: nil
-        )
-    }
-
-    @objc private func handleOrganizeNow(notification: Notification) {
-        if let userInfo = notification.userInfo,
-           let directoryURL = userInfo["directory"] as? URL {
-            organizeNow(directoryURL: directoryURL)
-        }
-    }
-
-    func organizeNow(directoryURL: URL? = nil) {
+    func organizeNow(directoryURL: URL? = nil) throws {
         let targetURL = directoryURL ?? self.directoryURL
         print("Starting to organize directory: \(targetURL.path)")
 
         let fileManager = FileManager.default
+        guard fileManager.fileExists(atPath: targetURL.path) else {
+            throw FileMonitorError.directoryNotFound
+        }
         do {
             let fileURLs = try fileManager.contentsOfDirectory(
                 at: targetURL,
@@ -46,12 +40,12 @@ class FileMonitor {
 
             for fileURL in fileURLs {
                 if isScreenshot(fileURL: fileURL) {
-                    organizeScreenshot(fileURL: fileURL)
+                    try organizeScreenshot(fileURL: fileURL)
                 }
             }
             print("Finished organizing directory")
         } catch {
-            print("Error organizing directory: \(error)")
+            throw FileMonitorError.fileSystemError(error.localizedDescription)
         }
     }
 
@@ -101,7 +95,7 @@ class FileMonitor {
 
             for fileURL in fileURLs {
                 if isScreenshot(fileURL: fileURL) {
-                    organizeScreenshot(fileURL: fileURL)
+                    try organizeScreenshot(fileURL: fileURL)
                 }
             }
         } catch {
@@ -116,12 +110,12 @@ class FileMonitor {
         return !matches.isEmpty
     }
 
-    private func organizeScreenshot(fileURL: URL) {
+    private func organizeScreenshot(fileURL: URL) throws {
         let filename = fileURL.lastPathComponent
         let range = NSRange(location: 0, length: filename.utf16.count)
 
         guard let match = screenshotRegex.firstMatch(in: filename, options: [], range: range) else {
-            return
+            throw FileMonitorError.invalidScreenshot
         }
 
         let yearRange = Range(match.range(at: 1), in: filename)!
@@ -131,17 +125,26 @@ class FileMonitor {
         let month = String(filename[monthRange])
 
         let destinationFolderURL = directoryURL.appendingPathComponent(year).appendingPathComponent(month)
-        let destinationFileURL = destinationFolderURL.appendingPathComponent(filename)
-
         let fileManager = FileManager.default
 
         do {
             try fileManager.createDirectory(at: destinationFolderURL, withIntermediateDirectories: true)
             print("Created directory: \(destinationFolderURL.path)")
+
+            var destinationFileURL = destinationFolderURL.appendingPathComponent(filename)
+            var counter = 1
+
+            while fileManager.fileExists(atPath: destinationFileURL.path) {
+                let nameWithoutExt = (filename as NSString).deletingPathExtension
+                let ext = (filename as NSString).pathExtension
+                destinationFileURL = destinationFolderURL.appendingPathComponent("\(nameWithoutExt) (\(counter)).\(ext)")
+                counter += 1
+            }
+
             try fileManager.moveItem(at: fileURL, to: destinationFileURL)
             print("Moved \(filename) to \(year)/\(month)/")
         } catch {
-            print("Error organizing screenshot: \(error)")
+            throw FileMonitorError.moveFailed(error.localizedDescription)
         }
     }
 

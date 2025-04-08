@@ -151,6 +151,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Assign the menu to the status item
         statusItem.menu = statusMenu
+
+        // Set up notification for organize now
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleOrganizeNow),
+            name: Notification.Name("OrganizeNow"),
+            object: nil
+        )
     }
 
     @objc private func toggleMonitoring() {
@@ -180,8 +188,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    private func showErrorAlert(title: String, message: String) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+
+    @objc private func handleOrganizeNow(notification: Notification) {
+        if let userInfo = notification.userInfo,
+           let directoryURL = userInfo["directory"] as? URL {
+            do {
+                try fileMonitor.organizeNow(directoryURL: directoryURL)
+            } catch {
+                showErrorAlert(title: "Error", message: "Failed to organize screenshots: \(error.localizedDescription)")
+            }
+        }
+    }
+
     @objc private func organizeNow() {
-        fileMonitor.organizeNow()
+        do {
+            try fileMonitor.organizeNow()
+        } catch FileMonitorError.directoryNotFound {
+            showErrorAlert(title: "Directory Not Found", message: "The target directory does not exist.")
+        } catch FileMonitorError.fileSystemError(let message) {
+            showErrorAlert(title: "File System Error", message: "An error occurred while accessing the file system: \(message)")
+        } catch FileMonitorError.invalidScreenshot {
+            showErrorAlert(title: "Invalid Screenshot", message: "One or more files could not be identified as screenshots.")
+        } catch FileMonitorError.moveFailed(let message) {
+            showErrorAlert(title: "Move Failed", message: "Failed to move screenshot: \(message)")
+        } catch {
+            showErrorAlert(title: "Error", message: "An unexpected error occurred: \(error.localizedDescription)")
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
