@@ -43,7 +43,7 @@ struct ContentView: View {
                     .truncationMode(.middle)
             }
 
-            Toggle("Enable monitoring on app start", isOn: $enableMonitoringOnStart)
+            Toggle("Monitor directory on app start", isOn: $enableMonitoringOnStart)
                 .padding(.top, 8)
 
             Spacer()
