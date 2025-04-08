@@ -7,6 +7,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusMenu: NSMenu!
     @AppStorage("enableMonitoringOnStart") private var enableMonitoringOnStart: Bool = true
 
+    private enum Window {
+        static let width: CGFloat = 400
+        static let height: CGFloat = 300
+    }
+
     private func findDesktopDirectory() -> URL? {
         // First try the regular Desktop directory
         let regularDesktop = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop")
@@ -158,11 +163,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func showSettings() {
         let settingsWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
+            contentRect: NSRect(x: 0, y: 0, width: Window.width, height: Window.height),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
+        settingsWindow.setFrame(NSRect(x: 0, y: 0, width: Window.width, height: Window.height), display: true)
         settingsWindow.center()
         settingsWindow.title = "Screenshot Organizer Settings"
         settingsWindow.contentView = NSHostingView(rootView: ContentView())

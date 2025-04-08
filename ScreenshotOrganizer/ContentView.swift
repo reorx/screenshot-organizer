@@ -54,7 +54,6 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding()
-        .frame(width: 300)
         .alert("Organize folder now?", isPresented: $showConfirmationDialog) {
             Button("Yes") {
                 if let url = selectedDirectory {
