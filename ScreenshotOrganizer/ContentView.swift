@@ -2,8 +2,10 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("monitoredDirectory") private var monitoredDirectory: String = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!.path
-    @AppStorage("isMonitoringEnabled") private var isMonitoringEnabled: Bool = true
+    @AppStorage("enableMonitoringOnStart") private var enableMonitoringOnStart: Bool = true
     @State private var isDirectoryPickerShown = false
+    @State private var showConfirmationDialog = false
+    @State private var selectedDirectory: URL?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -41,7 +43,7 @@ struct ContentView: View {
                     .truncationMode(.middle)
             }
 
-            Toggle("Enable monitoring on app start", isOn: $isMonitoringEnabled)
+            Toggle("Enable monitoring on app start", isOn: $enableMonitoringOnStart)
                 .padding(.top, 8)
 
             Spacer()
@@ -53,21 +55,43 @@ struct ContentView: View {
         }
         .padding()
         .frame(width: 300)
+        .alert("Organize folder now?", isPresented: $showConfirmationDialog) {
+            Button("Yes") {
+                if let url = selectedDirectory {
+                    monitoredDirectory = url.path
+                    NotificationCenter.default.post(
+                        name: Notification.Name("MonitoredDirectoryChanged"),
+                        object: nil,
+                        userInfo: ["directory": url]
+                    )
+                    NotificationCenter.default.post(
+                        name: Notification.Name("OrganizeNow"),
+                        object: nil,
+                        userInfo: ["directory": url]
+                    )
+                }
+            }
+            Button("No", role: .cancel) {
+                if let url = selectedDirectory {
+                    monitoredDirectory = url.path
+                    NotificationCenter.default.post(
+                        name: Notification.Name("MonitoredDirectoryChanged"),
+                        object: nil,
+                        userInfo: ["directory": url]
+                    )
+                }
+            }
+        } message: {
+            Text("Would you like to organize the selected folder now?")
+        }
     }
 
     private func handleDirectorySelection(result: Result<URL, Error>) {
         switch result {
         case .success(let url):
             if url.startAccessingSecurityScopedResource() {
-                monitoredDirectory = url.path
-
-                // Notify the FileMonitor to update the monitored directory
-                NotificationCenter.default.post(
-                    name: Notification.Name("MonitoredDirectoryChanged"),
-                    object: nil,
-                    userInfo: ["directory": url]
-                )
-
+                selectedDirectory = url
+                showConfirmationDialog = true
                 url.stopAccessingSecurityScopedResource()
             }
         case .failure(let error):

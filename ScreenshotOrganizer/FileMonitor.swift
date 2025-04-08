@@ -5,6 +5,7 @@ class FileMonitor {
     private var directoryMonitor: DispatchSourceFileSystemObject?
     private let screenshotRegex = try! NSRegularExpression(pattern: "Screenshot (\\d{4})-(\\d{2})-(\\d{2}) at .+\\.png", options: [])
     private var fileSystemEventStream: FSEventStreamRef?
+    var isMonitoring: Bool = false
     private let fileSystemEventCallback: FSEventStreamCallback = { (stream, contextInfo, numEvents, eventPaths, eventFlags, eventIds) in
         let fileMonitor = Unmanaged<FileMonitor>.fromOpaque(contextInfo!).takeUnretainedValue()
         fileMonitor.checkForNewScreenshots()
@@ -12,9 +13,50 @@ class FileMonitor {
 
     init(directoryURL: URL) {
         self.directoryURL = directoryURL
+        setupNotifications()
+    }
+
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleOrganizeNow),
+            name: Notification.Name("OrganizeNow"),
+            object: nil
+        )
+    }
+
+    @objc private func handleOrganizeNow(notification: Notification) {
+        if let userInfo = notification.userInfo,
+           let directoryURL = userInfo["directory"] as? URL {
+            organizeNow(directoryURL: directoryURL)
+        }
+    }
+
+    func organizeNow(directoryURL: URL? = nil) {
+        let targetURL = directoryURL ?? self.directoryURL
+        print("Starting to organize directory: \(targetURL.path)")
+
+        let fileManager = FileManager.default
+        do {
+            let fileURLs = try fileManager.contentsOfDirectory(
+                at: targetURL,
+                includingPropertiesForKeys: [.creationDateKey],
+                options: [.skipsHiddenFiles]
+            )
+
+            for fileURL in fileURLs {
+                if isScreenshot(fileURL: fileURL) {
+                    organizeScreenshot(fileURL: fileURL)
+                }
+            }
+            print("Finished organizing directory")
+        } catch {
+            print("Error organizing directory: \(error)")
+        }
     }
 
     func startMonitoring() throws {
+        guard !isMonitoring else { return }
         print("Starting to monitor directory: \(directoryURL.path)")
         guard FileManager.default.fileExists(atPath: directoryURL.path) else {
             throw NSError(domain: "FileMonitor", code: 1, userInfo: [NSLocalizedDescriptionKey: "Directory does not exist"])
@@ -39,8 +81,9 @@ class FileMonitor {
         )
 
         if let stream = fileSystemEventStream {
-            FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
+            FSEventStreamSetDispatchQueue(stream, DispatchQueue.main)
             FSEventStreamStart(stream)
+            isMonitoring = true
         } else {
             throw NSError(domain: "FileMonitor", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not create file system event stream"])
         }
@@ -94,6 +137,7 @@ class FileMonitor {
 
         do {
             try fileManager.createDirectory(at: destinationFolderURL, withIntermediateDirectories: true)
+            print("Created directory: \(destinationFolderURL.path)")
             try fileManager.moveItem(at: fileURL, to: destinationFileURL)
             print("Moved \(filename) to \(year)/\(month)/")
         } catch {
@@ -102,11 +146,13 @@ class FileMonitor {
     }
 
     func stopMonitoring() {
+        guard isMonitoring else { return }
         if let stream = fileSystemEventStream {
             FSEventStreamStop(stream)
             FSEventStreamInvalidate(stream)
             FSEventStreamRelease(stream)
             fileSystemEventStream = nil
+            isMonitoring = false
         }
     }
 }

@@ -5,7 +5,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var fileMonitor: FileMonitor!
     private var statusMenu: NSMenu!
-    @AppStorage("isMonitoringEnabled") private var isMonitoringEnabled: Bool = true
+    @AppStorage("enableMonitoringOnStart") private var enableMonitoringOnStart: Bool = true
 
     private func findDesktopDirectory() -> URL? {
         // First try the regular Desktop directory
@@ -21,8 +21,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             try fileMonitor.startMonitoring()
         } catch {
             showDirectoryNotFoundAlert(error: error)
-            isMonitoringEnabled = false
         }
+    }
+
+    private func stopFileMonitoring() {
+        fileMonitor.stopMonitoring()
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -44,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fileMonitor = FileMonitor(directoryURL: monitoredDirectoryURL)
 
         // Check if directory exists and start monitoring if enabled
-        if isMonitoringEnabled {
+        if enableMonitoringOnStart {
             startFileMonitoring()
         }
 
@@ -77,9 +80,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
            let directoryURL = userInfo["directory"] as? URL {
             fileMonitor.stopMonitoring()
             fileMonitor = FileMonitor(directoryURL: directoryURL)
-            if isMonitoringEnabled {
                 startFileMonitoring()
-            }
         }
     }
 
@@ -94,8 +95,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Separator
         statusMenu.addItem(NSMenuItem.separator())
 
+        // Organize now item
+        let organizeNowItem = NSMenuItem(title: "Organize now", action: #selector(organizeNow), keyEquivalent: "")
+        statusMenu.addItem(organizeNowItem)
+
         // Monitoring status item
-        let monitoringStatusItem = NSMenuItem(title: "Monitoring: \(isMonitoringEnabled ? "Enabled" : "Disabled")", action: #selector(toggleMonitoring), keyEquivalent: "")
+        let monitoringStatusItem = NSMenuItem(title: "Monitoring: \(fileMonitor.isMonitoring ? "Enabled" : "Disabled")", action: #selector(toggleMonitoring), keyEquivalent: "")
         statusMenu.addItem(monitoringStatusItem)
 
         // Settings item
@@ -114,17 +119,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func toggleMonitoring() {
-        isMonitoringEnabled.toggle()
 
-        if isMonitoringEnabled {
-            startFileMonitoring()
+        if fileMonitor.isMonitoring {
+            stopFileMonitoring()
         } else {
-            fileMonitor.stopMonitoring()
+            startFileMonitoring()
         }
 
         // Update menu item title
-        if let monitoringItem = statusMenu.item(withTitle: "Monitoring: \(!isMonitoringEnabled ? "Enabled" : "Disabled")") {
-            monitoringItem.title = "Monitoring: \(isMonitoringEnabled ? "Enabled" : "Disabled")"
+        if let monitoringItem = statusMenu.item(withTitle: "Monitoring: \(fileMonitor.isMonitoring ? "Enabled" : "Disabled")") {
+            monitoringItem.title = "Monitoring: \(fileMonitor.isMonitoring ? "Enabled" : "Disabled")"
         }
     }
 
@@ -144,6 +148,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindow.makeKeyAndOrderFront(nil)
 
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    @objc private func organizeNow() {
+        fileMonitor.organizeNow()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
