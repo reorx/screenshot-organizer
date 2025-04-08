@@ -5,6 +5,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var fileMonitor: FileMonitor!
     private var statusMenu: NSMenu!
+    @AppStorage("isMonitoringEnabled") private var isMonitoringEnabled: Bool = true
+
+    private func findDesktopDirectory() -> URL? {
+        // First try the regular Desktop directory
+        let regularDesktop = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop")
+        if FileManager.default.fileExists(atPath: regularDesktop.path) {
+            return regularDesktop
+        }
+        return nil
+    }
+
+    private func startFileMonitoring() {
+        do {
+            try fileMonitor.startMonitoring()
+        } catch {
+            showDirectoryNotFoundAlert(error: error)
+            isMonitoringEnabled = false
+        }
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Set up the status bar item
@@ -19,11 +38,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Initialize the file monitor with the saved or default directory
         let monitoredDirectoryPath = UserDefaults.standard.string(forKey: "monitoredDirectory")
-            ?? FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!.path
+            ?? findDesktopDirectory()?.path ?? ""
         let monitoredDirectoryURL = URL(fileURLWithPath: monitoredDirectoryPath)
 
         fileMonitor = FileMonitor(directoryURL: monitoredDirectoryURL)
-        fileMonitor.startMonitoring()
+
+        // Check if directory exists and start monitoring if enabled
+        if isMonitoringEnabled {
+            startFileMonitoring()
+        }
 
         // Set up notification for directory changes
         NotificationCenter.default.addObserver(
@@ -40,12 +63,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("Screenshot Organizer is running in the menubar")
     }
 
+    private func showDirectoryNotFoundAlert(error: Error) {
+        let alert = NSAlert()
+        alert.messageText = "Directory Not Found"
+        alert.informativeText = "Could not monitor the directory.  Monitoring has been disabled. Error: \(error.localizedDescription)"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+
     @objc private func handleDirectoryChange(notification: Notification) {
         if let userInfo = notification.userInfo,
            let directoryURL = userInfo["directory"] as? URL {
             fileMonitor.stopMonitoring()
             fileMonitor = FileMonitor(directoryURL: directoryURL)
-            fileMonitor.startMonitoring()
+            if isMonitoringEnabled {
+                startFileMonitoring()
+            }
         }
     }
 
@@ -60,6 +94,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Separator
         statusMenu.addItem(NSMenuItem.separator())
 
+        // Monitoring status item
+        let monitoringStatusItem = NSMenuItem(title: "Monitoring: \(isMonitoringEnabled ? "Enabled" : "Disabled")", action: #selector(toggleMonitoring), keyEquivalent: "")
+        statusMenu.addItem(monitoringStatusItem)
+
         // Settings item
         let settingsItem = NSMenuItem(title: "Settings", action: #selector(showSettings), keyEquivalent: ",")
         statusMenu.addItem(settingsItem)
@@ -73,6 +111,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Assign the menu to the status item
         statusItem.menu = statusMenu
+    }
+
+    @objc private func toggleMonitoring() {
+        isMonitoringEnabled.toggle()
+
+        if isMonitoringEnabled {
+            startFileMonitoring()
+        } else {
+            fileMonitor.stopMonitoring()
+        }
+
+        // Update menu item title
+        if let monitoringItem = statusMenu.item(withTitle: "Monitoring: \(!isMonitoringEnabled ? "Enabled" : "Disabled")") {
+            monitoringItem.title = "Monitoring: \(isMonitoringEnabled ? "Enabled" : "Disabled")"
+        }
     }
 
     @objc private func showSettings() {

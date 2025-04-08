@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("monitoredDirectory") private var monitoredDirectory: String = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!.path
+    @AppStorage("isMonitoringEnabled") private var isMonitoringEnabled: Bool = true
     @State private var isDirectoryPickerShown = false
 
     var body: some View {
@@ -32,7 +33,16 @@ struct ContentView: View {
                 .padding(8)
                 .background(Color(.textBackgroundColor))
                 .cornerRadius(4)
+
+                Text(monitoredDirectory)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
             }
+
+            Toggle("Enable monitoring on app start", isOn: $isMonitoringEnabled)
+                .padding(.top, 8)
 
             Spacer()
 

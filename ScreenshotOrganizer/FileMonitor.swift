@@ -4,34 +4,46 @@ class FileMonitor {
     private let directoryURL: URL
     private var directoryMonitor: DispatchSourceFileSystemObject?
     private let screenshotRegex = try! NSRegularExpression(pattern: "Screenshot (\\d{4})-(\\d{2})-(\\d{2}) at .+\\.png", options: [])
+    private var fileSystemEventStream: FSEventStreamRef?
+    private let fileSystemEventCallback: FSEventStreamCallback = { (stream, contextInfo, numEvents, eventPaths, eventFlags, eventIds) in
+        let fileMonitor = Unmanaged<FileMonitor>.fromOpaque(contextInfo!).takeUnretainedValue()
+        fileMonitor.checkForNewScreenshots()
+    }
 
     init(directoryURL: URL) {
         self.directoryURL = directoryURL
     }
 
-    func startMonitoring() {
-        let directoryDescriptor = open(directoryURL.path, O_EVTONLY)
-
-        if directoryDescriptor < 0 {
-            print("Error: Could not open directory for monitoring")
-            return
+    func startMonitoring() throws {
+        print("Starting to monitor directory: \(directoryURL.path)")
+        guard FileManager.default.fileExists(atPath: directoryURL.path) else {
+            throw NSError(domain: "FileMonitor", code: 1, userInfo: [NSLocalizedDescriptionKey: "Directory does not exist"])
         }
 
-        directoryMonitor = DispatchSource.makeFileSystemObjectSource(
-            fileDescriptor: directoryDescriptor,
-            eventMask: .write,
-            queue: .global()
+        var context = FSEventStreamContext(
+            version: 0,
+            info: Unmanaged.passUnretained(self).toOpaque(),
+            retain: nil,
+            release: nil,
+            copyDescription: nil
         )
 
-        directoryMonitor?.setEventHandler { [weak self] in
-            self?.checkForNewScreenshots()
-        }
+        fileSystemEventStream = FSEventStreamCreate(
+            nil,
+            fileSystemEventCallback,
+            &context,
+            [directoryURL.path] as CFArray,
+            FSEventStreamEventId(kFSEventStreamEventIdSinceNow),
+            1.0,
+            FSEventStreamCreateFlags(kFSEventStreamCreateFlagFileEvents)
+        )
 
-        directoryMonitor?.setCancelHandler {
-            close(directoryDescriptor)
+        if let stream = fileSystemEventStream {
+            FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
+            FSEventStreamStart(stream)
+        } else {
+            throw NSError(domain: "FileMonitor", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not create file system event stream"])
         }
-
-        directoryMonitor?.resume()
     }
 
     private func checkForNewScreenshots() {
@@ -81,12 +93,8 @@ class FileMonitor {
         let fileManager = FileManager.default
 
         do {
-            // Create directory if it doesn't exist
             try fileManager.createDirectory(at: destinationFolderURL, withIntermediateDirectories: true)
-
-            // Move the file
             try fileManager.moveItem(at: fileURL, to: destinationFileURL)
-
             print("Moved \(filename) to \(year)/\(month)/")
         } catch {
             print("Error organizing screenshot: \(error)")
@@ -94,7 +102,11 @@ class FileMonitor {
     }
 
     func stopMonitoring() {
-        directoryMonitor?.cancel()
-        directoryMonitor = nil
+        if let stream = fileSystemEventStream {
+            FSEventStreamStop(stream)
+            FSEventStreamInvalidate(stream)
+            FSEventStreamRelease(stream)
+            fileSystemEventStream = nil
+        }
     }
 }
