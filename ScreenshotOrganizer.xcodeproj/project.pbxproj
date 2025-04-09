@@ -10,6 +10,7 @@
 		2D412C08CB31202D939B3AE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAC25A121C87606D74433D2F /* Assets.xcassets */; };
 		475CD581BFB94856E6344294 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B3DB258197C6BBD4EE983D /* AppDelegate.swift */; };
 		4FABF5F097A3A5BD5E0141B7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE65B6C4735A489C9DB5E17 /* ContentView.swift */; };
+		54508DE0D293274A8807655C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959B6B8684EC41A4C1C1E4F /* Constants.swift */; };
 		7BBBAD5AC2F29166995B6D85 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD13073E20B6F007EB27850 /* AppLogger.swift */; };
 		A59220CD130A1070D2C0A8FD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DE15EF095B4D72E2995B4D8 /* Preview Assets.xcassets */; };
 		DA49A14B6FB9F2B487241EFD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8318E21DF06EFAC8B995CBA /* main.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0959B6B8684EC41A4C1C1E4F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2856C72A01787D1B6859310B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3D9318DA5CC071CF1DA9AD6B /* ScreenshotOrganizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenshotOrganizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AD13073E20B6F007EB27850 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
@@ -44,6 +46,7 @@
 				A4B3DB258197C6BBD4EE983D /* AppDelegate.swift */,
 				7AD13073E20B6F007EB27850 /* AppLogger.swift */,
 				CAC25A121C87606D74433D2F /* Assets.xcassets */,
+				0959B6B8684EC41A4C1C1E4F /* Constants.swift */,
 				DAE65B6C4735A489C9DB5E17 /* ContentView.swift */,
 				969CDD22B665D91F5AA9FC20 /* FileMonitor.swift */,
 				2856C72A01787D1B6859310B /* Info.plist */,
@@ -136,6 +139,7 @@
 			files = (
 				475CD581BFB94856E6344294 /* AppDelegate.swift in Sources */,
 				7BBBAD5AC2F29166995B6D85 /* AppLogger.swift in Sources */,
+				54508DE0D293274A8807655C /* Constants.swift in Sources */,
 				4FABF5F097A3A5BD5E0141B7 /* ContentView.swift in Sources */,
 				F3053729E386DF10D38913A5 /* FileMonitor.swift in Sources */,
 				DA49A14B6FB9F2B487241EFD /* main.swift in Sources */,

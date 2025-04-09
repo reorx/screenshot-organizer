@@ -1,11 +1,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @AppStorage("monitoredDirectory") private var monitoredDirectory: String = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!.path
-    @AppStorage("enableMonitoringOnStart") private var enableMonitoringOnStart: Bool = true
+    @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
+    @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
+    @AppStorage(SettingsKey.enableMonitoringOnStart) private var enableMonitoringOnStart: Bool = SettingsDefault.enableMonitoringOnStart
     @State private var isDirectoryPickerShown = false
+    @State private var isLogDirectoryPickerShown = false
     @State private var showConfirmationDialog = false
     @State private var selectedDirectory: URL?
+    @State private var selectedLogDirectory: URL?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -43,6 +46,36 @@ struct ContentView: View {
                     .truncationMode(.middle)
             }
 
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Log folder:")
+                    .font(.subheadline)
+
+                HStack {
+                    Text(logDirectory)
+                        .truncationMode(.middle)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Button("Change") {
+                        isLogDirectoryPickerShown = true
+                    }
+                    .fileImporter(
+                        isPresented: $isLogDirectoryPickerShown,
+                        allowedContentTypes: [.folder],
+                        onCompletion: handleLogDirectorySelection
+                    )
+                }
+                .padding(8)
+                .background(Color(.textBackgroundColor))
+                .cornerRadius(4)
+
+                Text(logDirectory)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+
             Toggle("Monitor directory on app start", isOn: $enableMonitoringOnStart)
                 .padding(.top, 8)
 
@@ -57,12 +90,6 @@ struct ContentView: View {
         .alert("Organize folder now?", isPresented: $showConfirmationDialog) {
             Button("Yes") {
                 if let url = selectedDirectory {
-                    monitoredDirectory = url.path
-                    NotificationCenter.default.post(
-                        name: Notification.Name("MonitoredDirectoryChanged"),
-                        object: nil,
-                        userInfo: ["directory": url]
-                    )
                     NotificationCenter.default.post(
                         name: Notification.Name("OrganizeNow"),
                         object: nil,
@@ -71,14 +98,6 @@ struct ContentView: View {
                 }
             }
             Button("No", role: .cancel) {
-                if let url = selectedDirectory {
-                    monitoredDirectory = url.path
-                    NotificationCenter.default.post(
-                        name: Notification.Name("MonitoredDirectoryChanged"),
-                        object: nil,
-                        userInfo: ["directory": url]
-                    )
-                }
             }
         } message: {
             Text("Would you like to organize the selected folder now?")
@@ -89,12 +108,34 @@ struct ContentView: View {
         switch result {
         case .success(let url):
             if url.startAccessingSecurityScopedResource() {
-                selectedDirectory = url
+                monitoredDirectory = url.path
                 showConfirmationDialog = true
+                NotificationCenter.default.post(
+                    name: Notification.Name("MonitoredDirectoryChanged"),
+                    object: nil,
+                    userInfo: ["directory": url]
+                )
                 url.stopAccessingSecurityScopedResource()
             }
         case .failure(let error):
-            print("Directory selection failed: \(error)")
+            AppLogger.shared.error("Directory selection failed: \(error)")
+        }
+    }
+
+    private func handleLogDirectorySelection(result: Result<URL, Error>) {
+        switch result {
+        case .success(let url):
+            if url.startAccessingSecurityScopedResource() {
+                logDirectory = url.path
+                NotificationCenter.default.post(
+                    name: Notification.Name("LogDirectoryChanged"),
+                    object: nil,
+                    userInfo: ["directory": url]
+                )
+                url.stopAccessingSecurityScopedResource()
+            }
+        case .failure(let error):
+            AppLogger.shared.error("Log directory selection failed: \(error)")
         }
     }
 }

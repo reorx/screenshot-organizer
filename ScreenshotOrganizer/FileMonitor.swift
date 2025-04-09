@@ -25,7 +25,7 @@ class FileMonitor {
 
     func organizeNow(directoryURL: URL? = nil) throws {
         let targetURL = directoryURL ?? self.directoryURL
-        print("Starting to organize directory: \(targetURL.path)")
+        AppLogger.shared.info("Starting to organize directory: \(targetURL.path)")
 
         let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: targetURL.path) else {
@@ -43,7 +43,7 @@ class FileMonitor {
                     try organizeScreenshot(fileURL: fileURL)
                 }
             }
-            print("Finished organizing directory")
+            AppLogger.shared.info("Finished organizing directory")
         } catch {
             throw FileMonitorError.fileSystemError(error.localizedDescription)
         }
@@ -51,7 +51,7 @@ class FileMonitor {
 
     func startMonitoring() throws {
         guard !isMonitoring else { return }
-        print("Starting to monitor directory: \(directoryURL.path)")
+        AppLogger.shared.info("Starting to monitor directory: \(directoryURL.path)")
         guard FileManager.default.fileExists(atPath: directoryURL.path) else {
             throw NSError(domain: "FileMonitor", code: 1, userInfo: [NSLocalizedDescriptionKey: "Directory does not exist"])
         }
@@ -99,7 +99,7 @@ class FileMonitor {
                 }
             }
         } catch {
-            print("Error scanning directory: \(error)")
+            AppLogger.shared.error("Error scanning directory: \(error)")
         }
     }
 
@@ -129,7 +129,7 @@ class FileMonitor {
 
         do {
             try fileManager.createDirectory(at: destinationFolderURL, withIntermediateDirectories: true)
-            print("Created directory: \(destinationFolderURL.path)")
+            AppLogger.shared.info("Created directory: \(destinationFolderURL.path)")
 
             var destinationFileURL = destinationFolderURL.appendingPathComponent(filename)
             var counter = 1
@@ -142,7 +142,7 @@ class FileMonitor {
             }
 
             try fileManager.moveItem(at: fileURL, to: destinationFileURL)
-            print("Moved \(filename) to \(year)/\(month)/")
+            AppLogger.shared.info("Moved \(filename) to \(year)/\(month)/")
         } catch {
             throw FileMonitorError.moveFailed(error.localizedDescription)
         }

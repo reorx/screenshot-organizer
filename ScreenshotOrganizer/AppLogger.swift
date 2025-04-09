@@ -28,10 +28,18 @@ public class AppLogger {
         systemLogger.debug("\(message)")
         fileLogger.log(message, level: .debug)
     }
+
+    public var logFileURL: URL {
+        return fileLogger.logFileURL ?? URL(fileURLWithPath: "")
+    }
+}
+
+public func setupAppLogger(logDirectory: URL) {
+    AppLogger.shared.setup(logDirectory: logDirectory)
 }
 
 private class FileLogger {
-    private var logFileURL: URL?
+    public var logFileURL: URL?
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -39,11 +47,12 @@ private class FileLogger {
     }()
 
     func setup(logDirectory: URL) {
+        AppLogger.shared.info("Setting up file logger with directory: \(logDirectory.path)")
         // Create the log directory if it doesn't exist
         do {
             try FileManager.default.createDirectory(at: logDirectory, withIntermediateDirectories: true)
         } catch {
-            print("Failed to create log directory: \(error)")
+            AppLogger.shared.error("Failed to create log directory: \(error)")
         }
 
         let timestamp = DateFormatter.logFileName.string(from: Date())
@@ -66,7 +75,7 @@ private class FileLogger {
                 fileHandle.closeFile()
             }
         } catch {
-            print("Failed to write to log file: \(error)")
+            AppLogger.shared.error("Failed to write to log file: \(error)")
         }
     }
 }

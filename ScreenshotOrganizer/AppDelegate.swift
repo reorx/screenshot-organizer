@@ -5,22 +5,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var fileMonitor: FileMonitor!
     private var statusMenu: NSMenu!
-    @AppStorage("enableMonitoringOnStart") private var enableMonitoringOnStart: Bool = true
-    @AppStorage("logDirectory") private var logDirectory: String = ""
+    @AppStorage(SettingsKey.enableMonitoringOnStart) private var enableMonitoringOnStart: Bool = SettingsDefault.enableMonitoringOnStart
+    @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
+    @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
 
     private enum Window {
         static let width: CGFloat = 400
         static let height: CGFloat = 300
     }
 
-    private func findDesktopDirectory() -> URL? {
-        // First try the regular Desktop directory
-        let regularDesktop = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop")
-        if FileManager.default.fileExists(atPath: regularDesktop.path) {
-            return regularDesktop
-        }
-        return nil
-    }
+    // private func findDesktopDirectory() -> URL? {
+    //     // First try the regular Desktop directory
+    //     let regularDesktop = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop")
+    //     if FileManager.default.fileExists(atPath: regularDesktop.path) {
+    //         return regularDesktop
+    //     }
+    //     return nil
+    // }
 
     private func startFileMonitoring() {
         do {
@@ -64,28 +65,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Initialize the logger
+        setupAppLogger(logDirectory: URL(fileURLWithPath: logDirectory))
+        AppLogger.shared.info("Screenshot Organizer started")
+
         // Set up the status bar item
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         // Initialize the file monitor with the saved or default directory
-        let monitoredDirectoryPath = UserDefaults.standard.string(forKey: "monitoredDirectory")
-            ?? findDesktopDirectory()?.path ?? ""
-        let monitoredDirectoryURL = URL(fileURLWithPath: monitoredDirectoryPath)
-
-        fileMonitor = FileMonitor(directoryURL: monitoredDirectoryURL)
+        fileMonitor = FileMonitor(directoryURL: URL(fileURLWithPath: monitoredDirectory))
 
         if let button = statusItem.button {
             let image = NSImage(systemSymbolName: "photo", accessibilityDescription: "Screenshot Organizer")
             image?.isTemplate = true
             button.image = image
         }
-
-        // Setup logger
-        let logDir = logDirectory.isEmpty ?
-            FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("ScreenshotOrganizer/log") :
-            URL(fileURLWithPath: logDirectory)
-        AppLogger.shared.setup(logDirectory: logDir)
-        AppLogger.shared.info("Screenshot Organizer started")
 
         // Check if directory exists and start monitoring if enabled
         if enableMonitoringOnStart {
@@ -95,8 +89,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Set up notification for directory changes
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handleDirectoryChange),
+            selector: #selector(handleMonitoredDirectoryChange),
             name: Notification.Name("MonitoredDirectoryChanged"),
+            object: nil
+        )
+
+        // Set up notification for log directory changes
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLogDirectoryChange),
+            name: Notification.Name("LogDirectoryChanged"),
             object: nil
         )
 
@@ -113,12 +115,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         alert.runModal()
     }
 
-    @objc private func handleDirectoryChange(notification: Notification) {
+    @objc private func handleMonitoredDirectoryChange(notification: Notification) {
         if let userInfo = notification.userInfo,
            let directoryURL = userInfo["directory"] as? URL {
             fileMonitor.stopMonitoring()
             fileMonitor = FileMonitor(directoryURL: directoryURL)
             startFileMonitoring()
+        }
+    }
+
+    @objc private func handleLogDirectoryChange(notification: Notification) {
+        if let userInfo = notification.userInfo,
+           let directoryURL = userInfo["directory"] as? URL {
+            setupAppLogger(logDirectory: directoryURL)
+            AppLogger.shared.info("Log directory changed to: \(directoryURL.path)")
         }
     }
 
@@ -236,14 +246,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func showLog() {
-        let logDir = logDirectory.isEmpty ?
-            FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("ScreenshotOrganizer/log") :
-            URL(fileURLWithPath: logDirectory)
-
-        let timestamp = DateFormatter.logFileName.string(from: Date())
-        let logFile = logDir.appendingPathComponent("screenshot-organizer-\(timestamp).log")
-
-        NSWorkspace.shared.open(logFile)
+        NSWorkspace.shared.open(AppLogger.shared.logFileURL)
     }
 
     func applicationWillTerminate(_ notification: Notification) {
