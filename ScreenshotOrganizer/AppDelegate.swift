@@ -26,42 +26,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func startFileMonitoring() {
         do {
             try fileMonitor.startMonitoring()
-            // Update status item icon and title
-            if let button = statusItem.button {
-                let image = NSImage(systemSymbolName: "photo", accessibilityDescription: "Screenshot Organizer")
-                image?.isTemplate = true
-                button.image = image
-                button.imagePosition = .imageLeft
-                button.title = ""
-            }
-            // Update menu item
-            if let menu = statusMenu, menu.items.count > 2 {
-                menu.item(at: 2)?.title = "Turn off"
-            }
             AppLogger.shared.info("File monitoring started")
         } catch {
             showDirectoryNotFoundAlert(error: error)
             AppLogger.shared.error("Failed to start file monitoring: \(error.localizedDescription)")
-            return
         }
+        updateMenubar()
     }
 
     private func stopFileMonitoring() {
         fileMonitor.stopMonitoring()
-        // Update status item icon and title
-        if let button = statusItem.button {
-            let image = NSImage(systemSymbolName: "photo", accessibilityDescription: "Screenshot Organizer")
-            image?.isTemplate = true
-            button.image = image
-            button.imagePosition = .imageLeft
-            button.title = ""
-            button.alphaValue = 0.5 // Dim the button
-        }
-        // Update menu item
-        if let menu = statusMenu, menu.items.count > 2 {
-            menu.item(at: 2)?.title = "Turn on"
-        }
         AppLogger.shared.info("File monitoring stopped")
+        updateMenubar()
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -69,22 +45,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupAppLogger(logDirectory: URL(fileURLWithPath: logDirectory))
         AppLogger.shared.info("Screenshot Organizer started")
 
-        // Set up the status bar item
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-
         // Initialize the file monitor with the saved or default directory
         fileMonitor = FileMonitor(directoryURL: URL(fileURLWithPath: monitoredDirectory))
 
-        if let button = statusItem.button {
-            let image = NSImage(systemSymbolName: "photo", accessibilityDescription: "Screenshot Organizer")
-            image?.isTemplate = true
-            button.image = image
-        }
-
-        // Check if directory exists and start monitoring if enabled
-        if enableMonitoringOnStart {
-            startFileMonitoring()
-        }
+        // Set up the menubar
+        setupMenubar()
 
         // Set up notification for directory changes
         NotificationCenter.default.addObserver(
@@ -102,8 +67,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
 
-        // Set up the menu for the status item
-        setupStatusMenu()
+        // Check if directory exists and start monitoring if enabled
+        if enableMonitoringOnStart {
+            startFileMonitoring()
+        } else {
+            updateMenubar()
+        }
     }
 
     private func showDirectoryNotFoundAlert(error: Error) {
@@ -132,11 +101,54 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func setupStatusMenu() {
+    private func updateMenubar() {
+        let isOn = fileMonitor.isMonitoring
+        print("Update menubar: isOn = \(isOn)")
+
+        // Update status item icon and title
+        if let button = statusItem.button {
+            let image = NSImage(systemSymbolName: "photo", accessibilityDescription: "Screenshot Organizer")
+            image?.isTemplate = true
+
+            if isOn {
+                button.image = image
+                button.imagePosition = .imageLeft
+                button.title = ""
+                button.alphaValue = 1.0 // Make the button fully opaque
+            } else {
+                button.image = image
+                button.imagePosition = .imageLeft
+                button.title = ""
+                button.alphaValue = 0.5 // Dim the button
+            }
+        }
+
+        // Update app name with monitoring status
+        if let appNameItem = statusMenu?.item(at: 0) as? NSMenuItem {
+            appNameItem.title = "Screenshot Organizer is \(isOn ? "ON" : "OFF")"
+        }
+
+        // Update turn on/off item
+        if let menu = statusMenu, menu.items.count > 2 {
+            menu.item(at: 2)?.title = isOn ? "Turn off" : "Turn on"
+        }
+    }
+
+    private func setupMenubar() {
+        // status bar button
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+
+        if let button = statusItem.button {
+            let image = NSImage(systemSymbolName: "photo", accessibilityDescription: "Screenshot Organizer")
+            image?.isTemplate = true
+            button.image = image
+        }
+
+        // menu
         statusMenu = NSMenu()
 
         // App name (disabled item)
-        let appNameItem = NSMenuItem(title: "Screenshot Organizer \(fileMonitor.isMonitoring ? "ON" : "OFF")", action: nil, keyEquivalent: "")
+        let appNameItem = NSMenuItem(title: "Screenshot Organizer", action: nil, keyEquivalent: "")
         appNameItem.isEnabled = false
         statusMenu.addItem(appNameItem)
 
