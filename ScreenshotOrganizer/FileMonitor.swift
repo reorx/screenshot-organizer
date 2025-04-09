@@ -1,11 +1,12 @@
 import Foundation
-
+import Cocoa
 
 enum FileMonitorError: Error {
     case directoryNotFound
     case fileSystemError(String)
     case invalidScreenshot
     case moveFailed(String)
+    case permissionDenied(String)
 }
 
 class FileMonitor {
@@ -27,8 +28,11 @@ class FileMonitor {
         let targetURL = directoryURL ?? self.directoryURL
         AppLogger.shared.info("Starting to organize directory: \(targetURL.path)")
 
+        try checkDirectoryAccess(for: targetURL)
+
         let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: targetURL.path) else {
+            print("Directory does not exist: \(targetURL.path)")
             throw FileMonitorError.directoryNotFound
         }
         do {
@@ -45,6 +49,7 @@ class FileMonitor {
             }
             AppLogger.shared.info("Finished organizing directory")
         } catch {
+            print("Error organizing directory: \(error)")
             throw FileMonitorError.fileSystemError(error.localizedDescription)
         }
     }
@@ -52,6 +57,9 @@ class FileMonitor {
     func startMonitoring() throws {
         guard !isMonitoring else { return }
         AppLogger.shared.info("Starting to monitor directory: \(directoryURL.path)")
+
+        try checkDirectoryAccess(for: directoryURL)
+
         guard FileManager.default.fileExists(atPath: directoryURL.path) else {
             throw NSError(domain: "FileMonitor", code: 1, userInfo: [NSLocalizedDescriptionKey: "Directory does not exist"])
         }
@@ -156,6 +164,45 @@ class FileMonitor {
             FSEventStreamRelease(stream)
             fileSystemEventStream = nil
             isMonitoring = false
+        }
+    }
+
+    /// Checks for and requests access to the given directory
+    private func checkDirectoryAccess(for directoryURL: URL) throws {
+        // Check if we can access the directory
+        do {
+            // Try to list contents as a simple access test
+            let _ = try FileManager.default.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
+        } catch let error as NSError {
+            // If access is denied, try to request permission
+            if error.domain == NSCocoaErrorDomain &&
+               (error.code == 257 || error.code == 260 || error.code == 1) {
+
+                AppLogger.shared.info("Requesting access permission for: \(directoryURL.path)")
+
+                // Request access using NSOpenPanel as a workaround
+                let openPanel = NSOpenPanel()
+                openPanel.message = "Grant access to \(directoryURL.lastPathComponent) folder to organize screenshots"
+                openPanel.prompt = "Grant Access"
+                openPanel.directoryURL = directoryURL
+                openPanel.canChooseDirectories = true
+                openPanel.canChooseFiles = false
+                openPanel.canCreateDirectories = false
+                openPanel.allowsMultipleSelection = false
+
+                let response = openPanel.runModal()
+                if response == .OK, let selectedURL = openPanel.url {
+                    // Access granted, try the operation again
+                    // The security scoped bookmark may be needed for future sessions
+                    let _ = selectedURL.startAccessingSecurityScopedResource()
+                    AppLogger.shared.info("Access granted for: \(selectedURL.path)")
+                } else {
+                    AppLogger.shared.error("Access denied for: \(directoryURL.path)")
+                    throw FileMonitorError.permissionDenied("Permission denied to access \(directoryURL.path). Please grant access in System Settings > Privacy & Security > Files and Folders.")
+                }
+            } else {
+                throw FileMonitorError.fileSystemError(error.localizedDescription)
+            }
         }
     }
 }

@@ -233,6 +233,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             showErrorAlert(title: "Invalid Screenshot", message: "One or more files could not be identified as screenshots.")
         } catch FileMonitorError.moveFailed(let message) {
             showErrorAlert(title: "Move Failed", message: "Failed to move screenshot: \(message)")
+        } catch FileMonitorError.permissionDenied(let message) {
+            showErrorAlert(title: "Permission Error", message: message)
         } catch {
             showErrorAlert(title: "Error", message: "An unexpected error occurred: \(error.localizedDescription)")
         }
