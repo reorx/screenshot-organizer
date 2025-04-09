@@ -136,7 +136,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusMenu = NSMenu()
 
         // App name (disabled item)
-        let appNameItem = NSMenuItem(title: "Screenshot Organizer", action: nil, keyEquivalent: "")
+        let appNameItem = NSMenuItem(title: "Screenshot Organizer \(fileMonitor.isMonitoring ? "ON" : "OFF")", action: nil, keyEquivalent: "")
         appNameItem.isEnabled = false
         statusMenu.addItem(appNameItem)
 
@@ -219,14 +219,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func handleOrganizeNow(notification: Notification) {
-        if let userInfo = notification.userInfo,
-           let directoryURL = userInfo["directory"] as? URL {
-            do {
-                try fileMonitor.organizeNow(directoryURL: directoryURL)
-            } catch {
-                showErrorAlert(title: "Error", message: "Failed to organize screenshots: \(error.localizedDescription)")
-            }
-        }
+        organizeNow()
     }
 
     @objc private func organizeNow() {

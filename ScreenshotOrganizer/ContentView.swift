@@ -89,13 +89,10 @@ struct ContentView: View {
         .padding()
         .alert("Organize folder now?", isPresented: $showConfirmationDialog) {
             Button("Yes") {
-                if let url = selectedDirectory {
-                    NotificationCenter.default.post(
-                        name: Notification.Name("OrganizeNow"),
-                        object: nil,
-                        userInfo: ["directory": url]
-                    )
-                }
+                NotificationCenter.default.post(
+                    name: Notification.Name("OrganizeNow"),
+                    object: nil,
+                )
             }
             Button("No", role: .cancel) {
             }
