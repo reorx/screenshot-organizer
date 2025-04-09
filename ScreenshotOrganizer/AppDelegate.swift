@@ -6,6 +6,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var fileMonitor: FileMonitor!
     private var statusMenu: NSMenu!
     @AppStorage("enableMonitoringOnStart") private var enableMonitoringOnStart: Bool = true
+    @AppStorage("logDirectory") private var logDirectory: String = ""
 
     private enum Window {
         static let width: CGFloat = 400
@@ -36,8 +37,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let menu = statusMenu, menu.items.count > 2 {
                 menu.item(at: 2)?.title = "Turn off"
             }
+            AppLogger.shared.info("File monitoring started")
         } catch {
             showDirectoryNotFoundAlert(error: error)
+            AppLogger.shared.error("Failed to start file monitoring: \(error.localizedDescription)")
             return
         }
     }
@@ -57,6 +60,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let menu = statusMenu, menu.items.count > 2 {
             menu.item(at: 2)?.title = "Turn on"
         }
+        AppLogger.shared.info("File monitoring stopped")
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -71,11 +75,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fileMonitor = FileMonitor(directoryURL: monitoredDirectoryURL)
 
         if let button = statusItem.button {
-            // Use a simple template image instead of a system symbol
             let image = NSImage(systemSymbolName: "photo", accessibilityDescription: "Screenshot Organizer")
-            image?.isTemplate = true // Ensures proper appearance in menubar
+            image?.isTemplate = true
             button.image = image
         }
+
+        // Setup logger
+        let logDir = logDirectory.isEmpty ?
+            FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("ScreenshotOrganizer/log") :
+            URL(fileURLWithPath: logDirectory)
+        AppLogger.shared.setup(logDirectory: logDir)
+        AppLogger.shared.info("Screenshot Organizer started")
 
         // Check if directory exists and start monitoring if enabled
         if enableMonitoringOnStart {
@@ -92,9 +102,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Set up the menu for the status item
         setupStatusMenu()
-
-        // Print confirmation to console
-        print("Screenshot Organizer is running in the menubar")
     }
 
     private func showDirectoryNotFoundAlert(error: Error) {
@@ -141,6 +148,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Settings item
         let settingsItem = NSMenuItem(title: "Settings", action: #selector(showSettings), keyEquivalent: ",")
         statusMenu.addItem(settingsItem)
+
+        // Show log item
+        let showLogItem = NSMenuItem(title: "Show log", action: #selector(showLog), keyEquivalent: "l")
+        statusMenu.addItem(showLogItem)
 
         // Separator
         statusMenu.addItem(NSMenuItem.separator())
@@ -222,6 +233,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } catch {
             showErrorAlert(title: "Error", message: "An unexpected error occurred: \(error.localizedDescription)")
         }
+    }
+
+    @objc private func showLog() {
+        let logDir = logDirectory.isEmpty ?
+            FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("ScreenshotOrganizer/log") :
+            URL(fileURLWithPath: logDirectory)
+
+        let timestamp = DateFormatter.logFileName.string(from: Date())
+        let logFile = logDir.appendingPathComponent("screenshot-organizer-\(timestamp).log")
+
+        NSWorkspace.shared.open(logFile)
     }
 
     func applicationWillTerminate(_ notification: Notification) {
