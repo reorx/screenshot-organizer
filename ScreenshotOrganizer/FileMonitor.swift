@@ -13,6 +13,7 @@ class FileMonitor {
     private let directoryURL: URL
     private var directoryMonitor: DispatchSourceFileSystemObject?
     private let screenshotRegex = try! NSRegularExpression(pattern: "Screenshot (\\d{4})-(\\d{2})-(\\d{2}) at .+\\.png", options: [])
+    private let recordingRegex = try! NSRegularExpression(pattern: "Screen Recording (\\d{4})-(\\d{2})-(\\d{2}) at .+\\.mov", options: [])
     private var fileSystemEventStream: FSEventStreamRef?
     var isMonitoring: Bool = false
     private let fileSystemEventCallback: FSEventStreamCallback = { (stream, contextInfo, numEvents, eventPaths, eventFlags, eventIds) in
@@ -45,6 +46,8 @@ class FileMonitor {
             for fileURL in fileURLs {
                 if isScreenshot(fileURL: fileURL) {
                     try organizeScreenshot(fileURL: fileURL)
+                } else if isScreenRecording(fileURL: fileURL) {
+                    try organizeScreenRecording(fileURL: fileURL)
                 }
             }
             AppLogger.shared.info("Finished organizing directory")
@@ -104,6 +107,8 @@ class FileMonitor {
             for fileURL in fileURLs {
                 if isScreenshot(fileURL: fileURL) {
                     try organizeScreenshot(fileURL: fileURL)
+                } else if isScreenRecording(fileURL: fileURL) {
+                    try organizeScreenRecording(fileURL: fileURL)
                 }
             }
         } catch {
@@ -118,21 +123,16 @@ class FileMonitor {
         return !matches.isEmpty
     }
 
-    private func organizeScreenshot(fileURL: URL) throws {
+    private func isScreenRecording(fileURL: URL) -> Bool {
         let filename = fileURL.lastPathComponent
         let range = NSRange(location: 0, length: filename.utf16.count)
+        let matches = recordingRegex.matches(in: filename, options: [], range: range)
+        return !matches.isEmpty
+    }
 
-        guard let match = screenshotRegex.firstMatch(in: filename, options: [], range: range) else {
-            throw FileMonitorError.invalidScreenshot
-        }
-
-        let yearRange = Range(match.range(at: 1), in: filename)!
-        let monthRange = Range(match.range(at: 2), in: filename)!
-
-        let year = String(filename[yearRange])
-        let month = String(filename[monthRange])
-
-        let destinationFolderURL = directoryURL.appendingPathComponent(year).appendingPathComponent(month)
+    private func organizeFileByDate(fileURL: URL, baseURL: URL, year: String, month: String, logPrefix: String = "") throws {
+        let filename = fileURL.lastPathComponent
+        let destinationFolderURL = baseURL.appendingPathComponent(year).appendingPathComponent(month)
         let fileManager = FileManager.default
 
         do {
@@ -150,10 +150,46 @@ class FileMonitor {
             }
 
             try fileManager.moveItem(at: fileURL, to: destinationFileURL)
-            AppLogger.shared.info("Moved \(filename) to \(year)/\(month)/")
+            AppLogger.shared.info("Moved \(filename) to \(logPrefix)\(year)/\(month)/")
         } catch {
             throw FileMonitorError.moveFailed(error.localizedDescription)
         }
+    }
+
+    private func organizeScreenRecording(fileURL: URL) throws {
+        let filename = fileURL.lastPathComponent
+        let range = NSRange(location: 0, length: filename.utf16.count)
+
+        guard let match = recordingRegex.firstMatch(in: filename, options: [], range: range) else {
+            throw FileMonitorError.invalidScreenshot
+        }
+
+        let yearRange = Range(match.range(at: 1), in: filename)!
+        let monthRange = Range(match.range(at: 2), in: filename)!
+
+        let year = String(filename[yearRange])
+        let month = String(filename[monthRange])
+
+        // Create recordings directory under the main directory
+        let recordingsBaseURL = directoryURL.appendingPathComponent("recordings")
+        try organizeFileByDate(fileURL: fileURL, baseURL: recordingsBaseURL, year: year, month: month, logPrefix: "recordings/")
+    }
+
+    private func organizeScreenshot(fileURL: URL) throws {
+        let filename = fileURL.lastPathComponent
+        let range = NSRange(location: 0, length: filename.utf16.count)
+
+        guard let match = screenshotRegex.firstMatch(in: filename, options: [], range: range) else {
+            throw FileMonitorError.invalidScreenshot
+        }
+
+        let yearRange = Range(match.range(at: 1), in: filename)!
+        let monthRange = Range(match.range(at: 2), in: filename)!
+
+        let year = String(filename[yearRange])
+        let month = String(filename[monthRange])
+
+        try organizeFileByDate(fileURL: fileURL, baseURL: directoryURL, year: year, month: month)
     }
 
     func stopMonitoring() {
