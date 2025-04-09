@@ -12,9 +12,17 @@ struct ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Screenshot Organizer")
-                .font(.headline)
-                .padding(.bottom, 8)
+            HStack {
+                Image("icon")
+                    .resizable()
+                    .frame(width: 48, height: 48)
+                    .cornerRadius(8)
+
+                Text("Screenshot Organizer")
+                    .font(.headline)
+            }
+            .padding(.bottom, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Monitored folder:")

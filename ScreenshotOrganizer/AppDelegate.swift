@@ -11,7 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private enum Window {
         static let width: CGFloat = 400
-        static let height: CGFloat = 300
+        static let height: CGFloat = 400
     }
 
     // private func findDesktopDirectory() -> URL? {
