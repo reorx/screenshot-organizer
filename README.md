@@ -1,13 +1,15 @@
 # Screenshot Organizer
 
-A macOS menubar app that automatically organizes screenshot files into year/month folders.
+A macOS menubar app that automatically organizes screenshot files and screen recordings into year/month folders.
 
 ## Features
 
 - Runs silently in the background as a menubar app
-- Monitors a specified folder (default: Desktop) for new screenshot files
+- Monitors a specified folder (default: Desktop) for new screenshot files and screen recordings
 - Automatically moves screenshots to YYYY/MM folders based on the screenshot's date
+- Automatically moves screen recordings to recordings/YYYY/MM folders
 - Allows changing the monitored folder through the UI
+- Organize files on-demand with "Organize now" option
 
 ## Requirements
 
@@ -33,12 +35,15 @@ A macOS menubar app that automatically organizes screenshot files into year/mont
 3. Click the icon to access settings
 4. By default, the app monitors your Desktop folder
 5. You can change the monitored folder in the settings
+6. Use "Organize now" from the menu to organize files immediately
 
 ## How It Works
 
 When you take a screenshot on macOS, it's saved with a filename in the format: `Screenshot YYYY-MM-DD at HH.MM.SS.png`. The app looks for files matching this pattern and moves them to a folder structure based on the date in the filename.
 
 For example, a file named `Screenshot 2023-04-15 at 10.30.45.png` would be moved to `~/Desktop/2023/04/Screenshot 2023-04-15 at 10.30.45.png`.
+
+Similarly, screen recordings with the format `Screen Recording YYYY-MM-DD at HH.MM.SS.mov` are organized into `~/Desktop/recordings/YYYY/MM/Screen Recording YYYY-MM-DD at HH.MM.SS.mov`.
 
 ## License
 
