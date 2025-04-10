@@ -6,6 +6,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var fileMonitor: FileMonitor!
     private var statusMenu: NSMenu!
+    private var settingsWindowController: NSWindowController?
     @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
     @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin: Bool = SettingsDefault.launchAtLogin {
@@ -211,6 +212,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func showSettings() {
+        // If we already have a settings window, just bring it to front
+        if let windowController = settingsWindowController,
+           let window = windowController.window {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        // Otherwise create a new window
         let settingsWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: Window.width, height: Window.height),
             styleMask: [.titled, .closable],
@@ -222,8 +232,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindow.title = "Screenshot Organizer Settings"
         settingsWindow.contentView = NSHostingView(rootView: SettingsContentView())
 
-        let windowController = NSWindowController(window: settingsWindow)
-        windowController.showWindow(nil)
+        settingsWindowController = NSWindowController(window: settingsWindow)
+        settingsWindowController?.showWindow(nil)
         settingsWindow.makeKeyAndOrderFront(nil)
 
         NSApp.activate(ignoringOtherApps: true)
