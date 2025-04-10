@@ -14,3 +14,13 @@ targets:
         INFOPLIST_FILE: ScreenshotOrganizer/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: com.reorx.ScreenshotOrganizer
         CODE_SIGN_ENTITLEMENTS: ScreenshotOrganizer/ScreenshotOrganizer.entitlements
+  ScreenshotOrganizerLauncher:
+    type: application
+    platform: macOS
+    sources:
+      - ScreenshotOrganizerLauncher
+    settings:
+      base:
+        INFOPLIST_FILE: ScreenshotOrganizerLauncher/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.reorx.ScreenshotOrganizer.Launcher
+        CODE_SIGN_ENTITLEMENTS: ScreenshotOrganizerLauncher/ScreenshotOrganizerLauncher.entitlements

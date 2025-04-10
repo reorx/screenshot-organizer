@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2D412C08CB31202D939B3AE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAC25A121C87606D74433D2F /* Assets.xcassets */; };
 		475CD581BFB94856E6344294 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B3DB258197C6BBD4EE983D /* AppDelegate.swift */; };
+		4ADDA6D17B56CFA588B5A757 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F1011AB6F8387A658546FA /* main.swift */; };
 		4FABF5F097A3A5BD5E0141B7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE65B6C4735A489C9DB5E17 /* ContentView.swift */; };
 		54508DE0D293274A8807655C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959B6B8684EC41A4C1C1E4F /* Constants.swift */; };
 		7BBBAD5AC2F29166995B6D85 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD13073E20B6F007EB27850 /* AppLogger.swift */; };
@@ -20,14 +21,18 @@
 /* Begin PBXFileReference section */
 		0959B6B8684EC41A4C1C1E4F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2856C72A01787D1B6859310B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		2B0729CC69F3D53BF8941E9C /* ScreenshotOrganizerLauncher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScreenshotOrganizerLauncher.entitlements; sourceTree = "<group>"; };
 		3D9318DA5CC071CF1DA9AD6B /* ScreenshotOrganizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenshotOrganizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		470F50A7532E508B244A2F3C /* ScreenshotOrganizerLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenshotOrganizerLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AD13073E20B6F007EB27850 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		969CDD22B665D91F5AA9FC20 /* FileMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMonitor.swift; sourceTree = "<group>"; };
 		9DE15EF095B4D72E2995B4D8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A4B3DB258197C6BBD4EE983D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A8318E21DF06EFAC8B995CBA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		C0F1011AB6F8387A658546FA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C36F5CBF7F34250B6EC66D6C /* ScreenshotOrganizer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScreenshotOrganizer.entitlements; sourceTree = "<group>"; };
 		CAC25A121C87606D74433D2F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D7105D43346BA15BCA978F3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		DAE65B6C4735A489C9DB5E17 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				3D9318DA5CC071CF1DA9AD6B /* ScreenshotOrganizer.app */,
+				470F50A7532E508B244A2F3C /* ScreenshotOrganizerLauncher.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -69,13 +75,39 @@
 			isa = PBXGroup;
 			children = (
 				7AA888B4D9326284E1A1C4D5 /* ScreenshotOrganizer */,
+				E40403990A55151DEBB01E3C /* ScreenshotOrganizerLauncher */,
 				9A94D6F7424FCA564B4350DC /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		E40403990A55151DEBB01E3C /* ScreenshotOrganizerLauncher */ = {
+			isa = PBXGroup;
+			children = (
+				D7105D43346BA15BCA978F3E /* Info.plist */,
+				C0F1011AB6F8387A658546FA /* main.swift */,
+				2B0729CC69F3D53BF8941E9C /* ScreenshotOrganizerLauncher.entitlements */,
+			);
+			path = ScreenshotOrganizerLauncher;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A6B28E7EE7720DD0B412AFC9 /* ScreenshotOrganizerLauncher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1648E22303E4B09BC91B0CFB /* Build configuration list for PBXNativeTarget "ScreenshotOrganizerLauncher" */;
+			buildPhases = (
+				72E80859853AA041F4DC7290 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ScreenshotOrganizerLauncher;
+			productName = ScreenshotOrganizerLauncher;
+			productReference = 470F50A7532E508B244A2F3C /* ScreenshotOrganizerLauncher.app */;
+			productType = "com.apple.product-type.application";
+		};
 		AB0B5B9B7DD6C2AD558F4565 /* ScreenshotOrganizer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5FE1330EF1EC8E53BA490947 /* Build configuration list for PBXNativeTarget "ScreenshotOrganizer" */;
@@ -114,6 +146,7 @@
 			projectRoot = "";
 			targets = (
 				AB0B5B9B7DD6C2AD558F4565 /* ScreenshotOrganizer */,
+				A6B28E7EE7720DD0B412AFC9 /* ScreenshotOrganizerLauncher */,
 			);
 		};
 /* End PBXProject section */
@@ -131,6 +164,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		72E80859853AA041F4DC7290 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4ADDA6D17B56CFA588B5A757 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BB4CEFF5A5E431E5C4DBDACD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -230,6 +271,22 @@
 			};
 			name = Debug;
 		};
+		8EFEB311A04AFB4A6DA118BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ScreenshotOrganizerLauncher/ScreenshotOrganizerLauncher.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ScreenshotOrganizerLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reorx.ScreenshotOrganizer.Launcher;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
 		92871FE538B3F11F58104E97 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -306,9 +363,34 @@
 			};
 			name = Release;
 		};
+		D45BA8330B984650081930C5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ScreenshotOrganizerLauncher/ScreenshotOrganizerLauncher.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ScreenshotOrganizerLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reorx.ScreenshotOrganizer.Launcher;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1648E22303E4B09BC91B0CFB /* Build configuration list for PBXNativeTarget "ScreenshotOrganizerLauncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8EFEB311A04AFB4A6DA118BC /* Debug */,
+				D45BA8330B984650081930C5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		5FE1330EF1EC8E53BA490947 /* Build configuration list for PBXNativeTarget "ScreenshotOrganizer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

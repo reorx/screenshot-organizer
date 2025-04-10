@@ -1,5 +1,6 @@
 import Cocoa
 import SwiftUI
+import ServiceManagement
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
@@ -8,10 +9,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @AppStorage(SettingsKey.enableMonitoringOnStart) private var enableMonitoringOnStart: Bool = SettingsDefault.enableMonitoringOnStart
     @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
     @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
+    @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin: Bool = SettingsDefault.launchAtLogin {
+        didSet {
+            updateLaunchAtLogin()
+        }
+    }
 
     private enum Window {
         static let width: CGFloat = 400
-        static let height: CGFloat = 400
+        static let height: CGFloat = 500
     }
 
     // private func findDesktopDirectory() -> URL? {
@@ -73,6 +79,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             updateMenubar()
         }
+
+        // Update launch at login status
+        updateLaunchAtLogin()
     }
 
     private func showDirectoryNotFoundAlert(error: Error) {
@@ -258,5 +267,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         fileMonitor.stopMonitoring()
+    }
+
+    private func updateLaunchAtLogin() {
+        if #available(macOS 13.0, *) {
+            Task {
+                do {
+                    if launchAtLogin {
+                        try SMAppService.mainApp.register()
+                    } else {
+                        try SMAppService.mainApp.unregister()
+                    }
+                    AppLogger.shared.info("Launch at login \(launchAtLogin ? "enabled" : "disabled")")
+                } catch {
+                    AppLogger.shared.error("Failed to \(launchAtLogin ? "enable" : "disable") launch at login: \(error.localizedDescription)")
+                }
+            }
+        } else {
+            AppLogger.shared.info("Fallback to legacy launch at login")
+            // Fallback for older macOS versions (though our minimum is macOS 13)
+            let identifier = "com.reorx.ScreenshotOrganizer.Launcher" as CFString
+            if launchAtLogin {
+                if !SMLoginItemSetEnabled(identifier, true) {
+                    AppLogger.shared.error("Failed to enable launch at login")
+                }
+            } else {
+                if !SMLoginItemSetEnabled(identifier, false) {
+                    AppLogger.shared.error("Failed to disable launch at login")
+                }
+            }
+        }
     }
 }

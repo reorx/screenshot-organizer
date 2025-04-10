@@ -4,13 +4,21 @@
 <dict>
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
-	<key>com.apple.security.files.user-selected.read-write</key>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>com.reorx.ScreenshotOrganizer</string>
+	</array>
+	<key>com.apple.security.files.desktop.read-write</key>
 	<true/>
 	<key>com.apple.security.files.downloads.read-write</key>
 	<true/>
 	<key>com.apple.security.files.pictures.read-write</key>
 	<true/>
-	<key>com.apple.security.files.desktop.read-write</key>
+	<key>com.apple.security.files.user-selected.read-write</key>
 	<true/>
+	<key>com.apple.security.temporary-exception.apple-events</key>
+	<array>
+		<string>com.reorx.ScreenshotOrganizer.Launcher</string>
+	</array>
 </dict>
 </plist>

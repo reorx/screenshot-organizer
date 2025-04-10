@@ -4,6 +4,7 @@ struct ContentView: View {
     @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
     @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
     @AppStorage(SettingsKey.enableMonitoringOnStart) private var enableMonitoringOnStart: Bool = SettingsDefault.enableMonitoringOnStart
+    @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin: Bool = SettingsDefault.launchAtLogin
     @State private var isDirectoryPickerShown = false
     @State private var isLogDirectoryPickerShown = false
     @State private var showConfirmationDialog = false
@@ -85,6 +86,9 @@ struct ContentView: View {
             }
 
             Toggle("Monitor directory on app start", isOn: $enableMonitoringOnStart)
+                .padding(.top, 8)
+
+            Toggle("Launch at login", isOn: $launchAtLogin)
                 .padding(.top, 8)
 
             Spacer()

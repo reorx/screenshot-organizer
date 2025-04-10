@@ -6,8 +6,6 @@
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
-    <key>CFBundleIconFile</key>
-    <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -17,29 +15,21 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.1</string>
+    <string>1.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>LSMinimumSystemVersion</key>
     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
-    <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2023. All rights reserved.</string>
-    <key>NSPrincipalClass</key>
-    <string>NSApplication</string>
     <key>LSUIElement</key>
-    <true/>
-    <key>NSSupportsAutomaticTermination</key>
-    <true/>
-    <key>NSSupportsSuddenTermination</key>
     <true/>
     <key>SMPrivilegedExecutables</key>
     <dict>
-        <key>com.reorx.ScreenshotOrganizer.Launcher</key>
-        <string>identifier "com.reorx.ScreenshotOrganizer.Launcher"</string>
+        <key>com.reorx.ScreenshotOrganizer</key>
+        <string>identifier "com.reorx.ScreenshotOrganizer"</string>
     </dict>
     <key>SMAuthorizedClients</key>
     <array>
-        <string>identifier "com.reorx.ScreenshotOrganizer.Launcher"</string>
+        <string>identifier "com.reorx.ScreenshotOrganizer"</string>
     </array>
 </dict>
 </plist>
