@@ -1,6 +1,7 @@
 import Cocoa
 import SwiftUI
 import ServiceManagement
+import KeyboardShortcuts
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
@@ -79,6 +80,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Update launch at login status
         updateLaunchAtLogin()
+
+        // Setup keyboard shortcuts
+        setupKeyboardShortcuts()
     }
 
     private func showDirectoryNotFoundAlert(error: Error) {
@@ -173,7 +177,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let organizeNowItem = NSMenuItem(title: "Organize now", action: #selector(organizeNow), keyEquivalent: "")
         statusMenu.addItem(organizeNowItem)
 
+        // Separator for folders section
+        statusMenu.addItem(NSMenuItem.separator())
+
+        // Open screenshots folder item
+        let screenshotsFolderItem = NSMenuItem(
+            title: "Current Screenshots Folder",
+            action: #selector(openScreenshotsFolder),
+            keyEquivalent: ""
+        )
+        statusMenu.addItem(screenshotsFolderItem)
+
+        // Open screen recordings folder item
+        let recordingsFolderItem = NSMenuItem(
+            title: "Current Screenrecordings Folder",
+            action: #selector(openScreenRecordingsFolder),
+            keyEquivalent: ""
+        )
+        statusMenu.addItem(recordingsFolderItem)
+
         // Settings item
+        statusMenu.addItem(NSMenuItem.separator())
         let settingsItem = NSMenuItem(title: "Settings", action: #selector(showSettings), keyEquivalent: ",")
         statusMenu.addItem(settingsItem)
 
@@ -337,6 +361,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         }
+    }
+
+    private func setupKeyboardShortcuts() {
+        KeyboardShortcuts.onKeyUp(for: .openScreenshotsFolder) { [weak self] in
+            guard let self = self else { return }
+            self.openScreenshotsFolder()
+        }
+
+        KeyboardShortcuts.onKeyUp(for: .openScreenRecordingsFolder) { [weak self] in
+            guard let self = self else { return }
+            self.openScreenRecordingsFolder()
+        }
+    }
+
+    @objc private func openScreenshotsFolder() {
+        let folder = fileMonitor.getCurrentScreenshotsFolder()
+        NSWorkspace.shared.open(folder)
+        AppLogger.shared.info("Opened screenshots folder: \(folder.path)")
+    }
+
+    @objc private func openScreenRecordingsFolder() {
+        let folder = fileMonitor.getCurrentScreenRecordingsFolder()
+        NSWorkspace.shared.open(folder)
+        AppLogger.shared.info("Opened screen recordings folder: \(folder.path)")
     }
 }
 

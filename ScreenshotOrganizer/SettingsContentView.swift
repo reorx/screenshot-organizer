@@ -1,4 +1,5 @@
 import SwiftUI
+import KeyboardShortcuts
 
 struct SettingsContentView: View {
     @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
@@ -86,6 +87,25 @@ struct SettingsContentView: View {
 
             Toggle("Launch at login", isOn: $launchAtLogin)
                 .padding(.top, 8)
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Keyboard Shortcuts:")
+                    .font(.subheadline)
+                    .padding(.top, 4)
+
+                HStack {
+                    Text("Open Screenshots Folder:")
+                        .frame(width: 200, alignment: .leading)
+                    KeyboardShortcuts.Recorder(for: .openScreenshotsFolder)
+                }
+
+                HStack {
+                    Text("Open Screen Recordings Folder:")
+                        .frame(width: 200, alignment: .leading)
+                    KeyboardShortcuts.Recorder(for: .openScreenRecordingsFolder)
+                }
+            }
+            .padding(.top, 12)
 
             Spacer()
 

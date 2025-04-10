@@ -1,12 +1,29 @@
 {
   "version": "0.2.0",
   "configurations": [
-
-      {
-          "type": "sweetpad-lldb",
-          "request": "launch",
-          "name": "Attach to running app (SweetPad)",
-          "preLaunchTask": "sweetpad: launch"
-      }
+    {
+      "type": "sweetpad-lldb",
+      "request": "launch",
+      "name": "Attach to running app (SweetPad)",
+      "preLaunchTask": "sweetpad: launch"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:screenshot-organizer}",
+      "name": "Debug ScreenshotOrganizer",
+      "program": "${workspaceFolder:screenshot-organizer}/.build/debug/ScreenshotOrganizer",
+      "preLaunchTask": "swift: Build Debug ScreenshotOrganizer"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:screenshot-organizer}",
+      "name": "Release ScreenshotOrganizer",
+      "program": "${workspaceFolder:screenshot-organizer}/.build/release/ScreenshotOrganizer",
+      "preLaunchTask": "swift: Build Release ScreenshotOrganizer"
+    }
   ]
 }

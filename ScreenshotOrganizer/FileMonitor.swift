@@ -241,4 +241,43 @@ class FileMonitor {
             }
         }
     }
+
+    // MARK: - Public folder access methods
+
+    /// Returns the URL for the folder containing screenshots for the current date
+    func getCurrentScreenshotsFolder() -> URL {
+        let dateComponents = Calendar.current.dateComponents([.year, .month], from: Date())
+        let year = String(dateComponents.year!)
+        let month = String(format: "%02d", dateComponents.month!)
+
+        let screenshotsFolder = directoryURL.appendingPathComponent(year).appendingPathComponent(month)
+
+        // Create the directory if it doesn't exist
+        do {
+            try FileManager.default.createDirectory(at: screenshotsFolder, withIntermediateDirectories: true)
+        } catch {
+            AppLogger.shared.error("Failed to create screenshots directory: \(error.localizedDescription)")
+        }
+
+        return screenshotsFolder
+    }
+
+    /// Returns the URL for the folder containing screen recordings for the current date
+    func getCurrentScreenRecordingsFolder() -> URL {
+        let dateComponents = Calendar.current.dateComponents([.year, .month], from: Date())
+        let year = String(dateComponents.year!)
+        let month = String(format: "%02d", dateComponents.month!)
+
+        let recordingsBaseURL = directoryURL.appendingPathComponent("recordings")
+        let recordingsFolder = recordingsBaseURL.appendingPathComponent(year).appendingPathComponent(month)
+
+        // Create the directory if it doesn't exist
+        do {
+            try FileManager.default.createDirectory(at: recordingsFolder, withIntermediateDirectories: true)
+        } catch {
+            AppLogger.shared.error("Failed to create recordings directory: \(error.localizedDescription)")
+        }
+
+        return recordingsFolder
+    }
 }

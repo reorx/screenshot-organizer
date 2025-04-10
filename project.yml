@@ -3,12 +3,18 @@ options:
   bundleIdPrefix: com.reorx
   deploymentTarget:
     macOS: "13.0"
+packages:
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: 1.0.0
 targets:
   ScreenshotOrganizer:
     type: application
     platform: macOS
     sources:
       - ScreenshotOrganizer
+    dependencies:
+      - package: KeyboardShortcuts
     settings:
       base:
         INFOPLIST_FILE: ScreenshotOrganizer/Info.plist
