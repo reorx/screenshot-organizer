@@ -182,6 +182,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Separator
         statusMenu.addItem(NSMenuItem.separator())
 
+        // About item
+        let aboutItem = NSMenuItem(title: "About", action: #selector(showAbout), keyEquivalent: "")
+        statusMenu.addItem(aboutItem)
+
         // Quit item
         let quitItem = NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         statusMenu.addItem(quitItem)
@@ -260,6 +264,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSWorkspace.shared.open(AppLogger.shared.logFileURL)
     }
 
+    @objc private func showAbout() {
+        let aboutWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 300, height: 250),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        aboutWindow.center()
+        aboutWindow.title = "About Screenshot Organizer"
+        aboutWindow.contentView = NSHostingView(rootView: AboutView())
+
+        let windowController = NSWindowController(window: aboutWindow)
+        windowController.showWindow(nil)
+        aboutWindow.makeKeyAndOrderFront(nil)
+
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         fileMonitor.stopMonitoring()
     }
@@ -292,5 +314,43 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         }
+    }
+}
+
+
+struct AboutView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Image("icon")
+                .resizable()
+                .frame(width: 64, height: 64)
+                .cornerRadius(8)
+
+            Text("Screenshot Organizer")
+                .font(.headline)
+                .bold()
+
+            Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Version Unknown")
+                .font(.subheadline)
+
+            Divider()
+
+            Text("Created by Reorx")
+                .font(.body)
+
+            HStack {
+                Text("Website:")
+                Link("reorx.com", destination: URL(string: "https://reorx.com")!)
+                    .foregroundColor(.blue)
+            }
+
+            Spacer()
+
+            Button("Close") {
+                NSApp.keyWindow?.close()
+            }
+        }
+        .frame(width: 300, height: 250)
+        .padding()
     }
 }
