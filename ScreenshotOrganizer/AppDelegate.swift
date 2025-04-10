@@ -6,7 +6,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var fileMonitor: FileMonitor!
     private var statusMenu: NSMenu!
-    @AppStorage(SettingsKey.enableMonitoringOnStart) private var enableMonitoringOnStart: Bool = SettingsDefault.enableMonitoringOnStart
     @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
     @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin: Bool = SettingsDefault.launchAtLogin {
@@ -17,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private enum Window {
         static let width: CGFloat = 400
-        static let height: CGFloat = 500
+        static let height: CGFloat = 450
     }
 
     // private func findDesktopDirectory() -> URL? {
@@ -73,12 +72,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
 
-        // Check if directory exists and start monitoring if enabled
-        if enableMonitoringOnStart {
-            startFileMonitoring()
-        } else {
-            updateMenubar()
-        }
+        // Start file monitoring
+        startFileMonitoring()
 
         // Update launch at login status
         updateLaunchAtLogin()
