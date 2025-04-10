@@ -7,6 +7,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var fileMonitor: FileMonitor!
     private var statusMenu: NSMenu!
     private var settingsWindowController: NSWindowController?
+    private var aboutWindowController: NSWindowController?
     @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
     @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin: Bool = SettingsDefault.launchAtLogin {
@@ -187,6 +188,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let aboutItem = NSMenuItem(title: "About", action: #selector(showAbout), keyEquivalent: "")
         statusMenu.addItem(aboutItem)
 
+        // Separator
+        statusMenu.addItem(NSMenuItem.separator())
+
         // Quit item
         let quitItem = NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         statusMenu.addItem(quitItem)
@@ -275,6 +279,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func showAbout() {
+        // If we already have an about window, just bring it to front
+        if let windowController = aboutWindowController,
+           let window = windowController.window {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        // Otherwise create a new window
         let aboutWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 300, height: 250),
             styleMask: [.titled, .closable],
@@ -285,8 +298,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         aboutWindow.title = "About Screenshot Organizer"
         aboutWindow.contentView = NSHostingView(rootView: AboutView())
 
-        let windowController = NSWindowController(window: aboutWindow)
-        windowController.showWindow(nil)
+        aboutWindowController = NSWindowController(window: aboutWindow)
+        aboutWindowController?.showWindow(nil)
         aboutWindow.makeKeyAndOrderFront(nil)
 
         NSApp.activate(ignoringOtherApps: true)
@@ -329,6 +342,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
 struct AboutView: View {
+    @State private var showingHelloAlert = false
+
     var body: some View {
         VStack(spacing: 16) {
             Image("icon")
@@ -356,8 +371,19 @@ struct AboutView: View {
 
             Spacer()
 
-            Button("Close") {
-                NSApp.keyWindow?.close()
+            HStack {
+                Button("Say Hello") {
+                    showingHelloAlert = true
+                }
+                .alert("Hello!", isPresented: $showingHelloAlert) {
+                    Button("OK", role: .cancel) { }
+                }
+
+                Spacer()
+
+                Button("Close") {
+                    NSApp.keyWindow?.close()
+                }
             }
         }
         .frame(width: 300, height: 250)
