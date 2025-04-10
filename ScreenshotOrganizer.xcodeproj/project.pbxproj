@@ -3,17 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		2D412C08CB31202D939B3AE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAC25A121C87606D74433D2F /* Assets.xcassets */; };
 		475CD581BFB94856E6344294 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B3DB258197C6BBD4EE983D /* AppDelegate.swift */; };
 		4ADDA6D17B56CFA588B5A757 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F1011AB6F8387A658546FA /* main.swift */; };
-		4FABF5F097A3A5BD5E0141B7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE65B6C4735A489C9DB5E17 /* ContentView.swift */; };
 		54508DE0D293274A8807655C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959B6B8684EC41A4C1C1E4F /* Constants.swift */; };
 		7BBBAD5AC2F29166995B6D85 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD13073E20B6F007EB27850 /* AppLogger.swift */; };
 		A59220CD130A1070D2C0A8FD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DE15EF095B4D72E2995B4D8 /* Preview Assets.xcassets */; };
+		AEF9EC7B1F82BCE5C556F458 /* SettingsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683E1C0A1A5B2422E2044FD0 /* SettingsContentView.swift */; };
 		DA49A14B6FB9F2B487241EFD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8318E21DF06EFAC8B995CBA /* main.swift */; };
 		F3053729E386DF10D38913A5 /* FileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969CDD22B665D91F5AA9FC20 /* FileMonitor.swift */; };
 /* End PBXBuildFile section */
@@ -24,6 +24,7 @@
 		2B0729CC69F3D53BF8941E9C /* ScreenshotOrganizerLauncher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScreenshotOrganizerLauncher.entitlements; sourceTree = "<group>"; };
 		3D9318DA5CC071CF1DA9AD6B /* ScreenshotOrganizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenshotOrganizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		470F50A7532E508B244A2F3C /* ScreenshotOrganizerLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenshotOrganizerLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		683E1C0A1A5B2422E2044FD0 /* SettingsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsContentView.swift; sourceTree = "<group>"; };
 		7AD13073E20B6F007EB27850 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		969CDD22B665D91F5AA9FC20 /* FileMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMonitor.swift; sourceTree = "<group>"; };
 		9DE15EF095B4D72E2995B4D8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -33,7 +34,6 @@
 		C36F5CBF7F34250B6EC66D6C /* ScreenshotOrganizer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScreenshotOrganizer.entitlements; sourceTree = "<group>"; };
 		CAC25A121C87606D74433D2F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D7105D43346BA15BCA978F3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		DAE65B6C4735A489C9DB5E17 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -52,11 +52,11 @@
 				7AD13073E20B6F007EB27850 /* AppLogger.swift */,
 				CAC25A121C87606D74433D2F /* Assets.xcassets */,
 				0959B6B8684EC41A4C1C1E4F /* Constants.swift */,
-				DAE65B6C4735A489C9DB5E17 /* ContentView.swift */,
 				969CDD22B665D91F5AA9FC20 /* FileMonitor.swift */,
 				2856C72A01787D1B6859310B /* Info.plist */,
 				A8318E21DF06EFAC8B995CBA /* main.swift */,
 				C36F5CBF7F34250B6EC66D6C /* ScreenshotOrganizer.entitlements */,
+				683E1C0A1A5B2422E2044FD0 /* SettingsContentView.swift */,
 				39F536E9DE81EF8286DB1B07 /* Preview Content */,
 			);
 			path = ScreenshotOrganizer;
@@ -132,6 +132,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = AC247587F94424D7E6AABF26 /* Build configuration list for PBXProject "ScreenshotOrganizer" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -179,8 +181,8 @@
 				475CD581BFB94856E6344294 /* AppDelegate.swift in Sources */,
 				7BBBAD5AC2F29166995B6D85 /* AppLogger.swift in Sources */,
 				54508DE0D293274A8807655C /* Constants.swift in Sources */,
-				4FABF5F097A3A5BD5E0141B7 /* ContentView.swift in Sources */,
 				F3053729E386DF10D38913A5 /* FileMonitor.swift in Sources */,
+				AEF9EC7B1F82BCE5C556F458 /* SettingsContentView.swift in Sources */,
 				DA49A14B6FB9F2B487241EFD /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,17 +195,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ScreenshotOrganizer/ScreenshotOrganizer.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = QFW98B7VB4;
 				INFOPLIST_FILE = ScreenshotOrganizer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.reorx.ScreenshotOrganizer;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -348,17 +346,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ScreenshotOrganizer/ScreenshotOrganizer.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = QFW98B7VB4;
 				INFOPLIST_FILE = ScreenshotOrganizer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.reorx.ScreenshotOrganizer;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Release;

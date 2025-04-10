@@ -221,7 +221,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindow.setFrame(NSRect(x: 0, y: 0, width: Window.width, height: Window.height), display: true)
         settingsWindow.center()
         settingsWindow.title = "Screenshot Organizer Settings"
-        settingsWindow.contentView = NSHostingView(rootView: ContentView())
+        settingsWindow.contentView = NSHostingView(rootView: SettingsContentView())
 
         let windowController = NSWindowController(window: settingsWindow)
         windowController.showWindow(nil)

@@ -1,9 +1,8 @@
 import SwiftUI
 
-struct ContentView: View {
+struct SettingsContentView: View {
     @AppStorage(SettingsKey.monitoredDirectory) private var monitoredDirectory: String = SettingsDefault.monitoredDirectory
     @AppStorage(SettingsKey.logDirectory) private var logDirectory: String = SettingsDefault.logDirectory
-    @AppStorage(SettingsKey.enableMonitoringOnStart) private var enableMonitoringOnStart: Bool = SettingsDefault.enableMonitoringOnStart
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin: Bool = SettingsDefault.launchAtLogin
     @State private var isDirectoryPickerShown = false
     @State private var isLogDirectoryPickerShown = false
@@ -84,9 +83,6 @@ struct ContentView: View {
                     .lineLimit(1)
                     .truncationMode(.middle)
             }
-
-            Toggle("Monitor directory on app start", isOn: $enableMonitoringOnStart)
-                .padding(.top, 8)
 
             Toggle("Launch at login", isOn: $launchAtLogin)
                 .padding(.top, 8)
