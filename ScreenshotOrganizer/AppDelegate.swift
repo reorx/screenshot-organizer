@@ -177,6 +177,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let organizeNowItem = NSMenuItem(title: "Organize now", action: #selector(organizeNow), keyEquivalent: "")
         statusMenu.addItem(organizeNowItem)
 
+        // Settings item
+        statusMenu.addItem(NSMenuItem.separator())
+        let settingsItem = NSMenuItem(title: "Settings", action: #selector(showSettings), keyEquivalent: ",")
+        statusMenu.addItem(settingsItem)
+
+        // About item
+        let aboutItem = NSMenuItem(title: "About", action: #selector(showAbout), keyEquivalent: "")
+        statusMenu.addItem(aboutItem)
+
         // Separator for folders section
         statusMenu.addItem(NSMenuItem.separator())
 
@@ -195,22 +204,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             keyEquivalent: ""
         )
         statusMenu.addItem(recordingsFolderItem)
-
-        // Settings item
-        statusMenu.addItem(NSMenuItem.separator())
-        let settingsItem = NSMenuItem(title: "Settings", action: #selector(showSettings), keyEquivalent: ",")
-        statusMenu.addItem(settingsItem)
-
-        // Show log item
-        let showLogItem = NSMenuItem(title: "Show log", action: #selector(showLog), keyEquivalent: "l")
-        statusMenu.addItem(showLogItem)
-
-        // Separator
-        statusMenu.addItem(NSMenuItem.separator())
-
-        // About item
-        let aboutItem = NSMenuItem(title: "About", action: #selector(showAbout), keyEquivalent: "")
-        statusMenu.addItem(aboutItem)
 
         // Separator
         statusMenu.addItem(NSMenuItem.separator())
