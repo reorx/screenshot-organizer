@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "screenshot-organizer",
     platforms: [
-        .macOS("14.0")
+        .macOS("12.0")
     ],
     products: [
         .executable(name: "ScreenshotOrganizer", targets: ["ScreenshotOrganizer"])
