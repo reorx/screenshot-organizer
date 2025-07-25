@@ -18,9 +18,15 @@ A macOS menubar app that automatically organizes screenshot files and screen rec
 
 ## Installation
 
-1. Download the latest release from the Releases page
+### Download Pre-built Release
+
+1. Download the latest release from the [Releases page](https://github.com/reorx/screenshot-organizer/releases)
 2. Extract the .zip file and drag the app to your Applications folder
 3. Launch the app
+
+### Build from GitHub Actions
+
+Each push to the main branch and every pull request automatically builds the app. You can download the latest build artifact from the [Actions page](https://github.com/reorx/screenshot-organizer/actions).
 
 ## Building from Source
 
