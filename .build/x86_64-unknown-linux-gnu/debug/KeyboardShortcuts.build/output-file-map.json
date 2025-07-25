@@ -1,0 +1,71 @@
+{
+  "": {
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/master.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/CarbonKeyboardShortcuts.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Key.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Key.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Key.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Key~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Key.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/KeyboardShortcuts.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/KeyboardShortcuts.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/KeyboardShortcuts.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/KeyboardShortcuts~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/KeyboardShortcuts.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/NSMenuItem++.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/NSMenuItem++.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/NSMenuItem++.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/NSMenuItem++~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/NSMenuItem++.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Name.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Name.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Name.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Name~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Name.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Recorder.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Recorder.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Recorder.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Recorder~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Recorder.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/RecorderCocoa.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/RecorderCocoa.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/RecorderCocoa.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/RecorderCocoa~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/RecorderCocoa.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Shortcut.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Shortcut.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Shortcut.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Shortcut~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Shortcut.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Utilities.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Utilities.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Utilities.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Utilities~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/Utilities.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/ViewModifiers.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/ViewModifiers.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/ViewModifiers.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/ViewModifiers~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/ViewModifiers.swiftdeps"
+  },
+  "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/resource_bundle_accessor.d",
+    "object": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/screenshot-organizer/screenshot-organizer/.build/x86_64-unknown-linux-gnu/debug/KeyboardShortcuts.build/resource_bundle_accessor.swiftdeps"
+  }
+}
