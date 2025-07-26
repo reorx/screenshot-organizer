@@ -35,7 +35,7 @@ jobs:
       run: |
         # Build the main app first
         xcodebuild -project ScreenshotOrganizer.xcodeproj \
-                   -target ScreenshotOrganizer \
+                   -scheme ScreenshotOrganizer \
                    -configuration Release \
                    -derivedDataPath build \
                    CODE_SIGN_IDENTITY="" \
@@ -45,7 +45,7 @@ jobs:
         
         # Build the launcher app
         xcodebuild -project ScreenshotOrganizer.xcodeproj \
-                   -target ScreenshotOrganizerLauncher \
+                   -scheme ScreenshotOrganizerLauncher \
                    -configuration Release \
                    -derivedDataPath build \
                    CODE_SIGN_IDENTITY="" \
