@@ -69,31 +69,44 @@ jobs:
         echo "App structure:"
         find release/ScreenshotOrganizer.app -type d -name "*Launcher*" || echo "No launcher directory found"
         
-        # Create zip file
+        # Determine the artifact name based on whether this is a tag or not
+        if [[ "${{ github.ref_type }}" == "tag" ]]; then
+          ARTIFACT_NAME="ScreenshotOrganizer-${{ github.ref_name }}.zip"
+          echo "Creating tagged release artifact: $ARTIFACT_NAME"
+        else
+          ARTIFACT_NAME="ScreenshotOrganizer.zip"
+          echo "Creating development artifact: $ARTIFACT_NAME"
+        fi
+        
+        # Create zip file with the determined name
         cd release
-        zip -r ScreenshotOrganizer.zip ScreenshotOrganizer.app
+        zip -r "$ARTIFACT_NAME" ScreenshotOrganizer.app
         cd ..
         
         # Move zip to root for easier access
-        mv release/ScreenshotOrganizer.zip ./
+        mv "release/$ARTIFACT_NAME" "./"
         
         # Show final zip file info
-        ls -la ScreenshotOrganizer.zip
+        ls -la "$ARTIFACT_NAME"
+        
+        # Store the artifact name for later steps
+        echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ScreenshotOrganizer-${{ github.sha }}
-        path: ScreenshotOrganizer.zip
+        name: ${{ github.ref_type == 'tag' && format('ScreenshotOrganizer-{0}', github.ref_name) || format('ScreenshotOrganizer-{0}', github.sha) }}
+        path: ${{ env.ARTIFACT_NAME }}
         retention-days: 30
     
     - name: Upload release asset (on tag)
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
-        files: ScreenshotOrganizer.zip
+        files: ${{ env.ARTIFACT_NAME }}
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
