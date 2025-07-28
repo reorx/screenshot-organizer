@@ -97,20 +97,17 @@ jobs:
         path: ${{ env.ARTIFACT_NAME }}
         retention-days: 30
     
-    - name: Upload release asset (on tag)
-      if: startsWith(github.ref, 'refs/tags/')
+    - name: Create asset for release (on tag)
+      if: github.ref_type == 'tag'
       run: |
         # Create zip file for release asset
         zip -r "$ARTIFACT_NAME.zip" "$ARTIFACT_NAME"
     
-    - name: Create GitHub release (on tag)
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
+    - name: Create release (on tag)
+      if: github.ref_type == 'tag'
+      uses: softprops/action-gh-release@v2
       with:
         files: ${{ env.ARTIFACT_NAME }}.zip
-        name: Release ${{ github.ref_name }}
-        draft: false
-        prerelease: false
+        #draft: false
+        #prerelease: false
         generate_release_notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
