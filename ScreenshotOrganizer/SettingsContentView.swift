@@ -119,7 +119,7 @@ struct SettingsContentView: View {
             Button("Yes") {
                 NotificationCenter.default.post(
                     name: Notification.Name("OrganizeNow"),
-                    object: nil,
+                    object: nil
                 )
             }
             Button("No", role: .cancel) {

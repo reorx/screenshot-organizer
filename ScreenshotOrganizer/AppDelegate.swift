@@ -342,7 +342,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         } else {
             AppLogger.shared.info("Fallback to legacy launch at login")
-            // Fallback for older macOS versions (though our minimum is macOS 13)
+            // Fallback for older macOS versions (macOS 12)
             let identifier = "com.reorx.ScreenshotOrganizer.Launcher" as CFString
             if launchAtLogin {
                 if !SMLoginItemSetEnabled(identifier, true) {

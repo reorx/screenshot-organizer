@@ -1,0 +1,99 @@
+name: Build and Package App
+
+on:
+  push:
+    branches: [ master, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v4
+      with:
+        path: |
+          .build
+          *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm
+        key: ${{ runner.os }}-spm-${{ hashFiles('Package.swift', 'Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Build app
+      run: |
+        # Build the main app first
+        xcodebuild -project ScreenshotOrganizer.xcodeproj \
+                   -scheme ScreenshotOrganizer \
+                   -configuration Release \
+                   -derivedDataPath build \
+                   CODE_SIGN_IDENTITY="" \
+                   CODE_SIGNING_REQUIRED=NO \
+                   CODE_SIGNING_ALLOWED=NO \
+                   build
+        
+        # Build the launcher app
+        xcodebuild -project ScreenshotOrganizer.xcodeproj \
+                   -scheme ScreenshotOrganizerLauncher \
+                   -configuration Release \
+                   -derivedDataPath build \
+                   CODE_SIGN_IDENTITY="" \
+                   CODE_SIGNING_REQUIRED=NO \
+                   CODE_SIGNING_ALLOWED=NO \
+                   build
+    
+    - name: Package app
+      run: |
+        # List what was built for debugging
+        echo "Built products:"
+        ls -la build/Build/Products/Release/
+        
+        # Create release directory
+        mkdir -p release
+        
+        # Copy the main app (which should contain the launcher)
+        cp -R build/Build/Products/Release/ScreenshotOrganizer.app release/
+        
+        # Verify the app structure
+        echo "App structure:"
+        find release/ScreenshotOrganizer.app -type d -name "*Launcher*" || echo "No launcher directory found"
+        
+        # Create zip file
+        cd release
+        zip -r ScreenshotOrganizer.zip ScreenshotOrganizer.app
+        cd ..
+        
+        # Move zip to root for easier access
+        mv release/ScreenshotOrganizer.zip ./
+        
+        # Show final zip file info
+        ls -la ScreenshotOrganizer.zip
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ScreenshotOrganizer-${{ github.sha }}
+        path: ScreenshotOrganizer.zip
+        retention-days: 30
+    
+    - name: Upload release asset (on tag)
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ScreenshotOrganizer.zip
+        name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

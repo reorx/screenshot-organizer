@@ -2,7 +2,7 @@ name: ScreenshotOrganizer
 options:
   bundleIdPrefix: com.reorx
   deploymentTarget:
-    macOS: "13.0"
+    macOS: "12.0"
 packages:
   KeyboardShortcuts:
     url: https://github.com/sindresorhus/KeyboardShortcuts
