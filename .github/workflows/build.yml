@@ -75,18 +75,20 @@ jobs:
       run: |
         # Determine code signing settings
         if [ "${{ env.ENABLE_CODE_SIGNING }}" == "true" ]; then
-          echo "Building with code signing enabled"
+          echo "🔐 Building with code signing enabled"
           CODE_SIGN_IDENTITY="${{ env.CODE_SIGN_IDENTITY }}"
           CODE_SIGNING_REQUIRED=YES
           CODE_SIGNING_ALLOWED=YES
           # Enable hardened runtime for notarization
           OTHER_CODE_SIGN_FLAGS="--options=runtime"
+          echo "Code signing identity: $CODE_SIGN_IDENTITY"
         else
-          echo "Building without code signing"
+          echo "⚠️  Building without code signing (app will trigger Gatekeeper warnings)"
           CODE_SIGN_IDENTITY=""
           CODE_SIGNING_REQUIRED=NO
           CODE_SIGNING_ALLOWED=NO
           OTHER_CODE_SIGN_FLAGS=""
+          echo "To enable code signing, configure the required secrets. See docs/code-signing.md"
         fi
         
         # Build the main app first
@@ -118,16 +120,16 @@ jobs:
         APP_PATH="build/Build/Products/Release/ScreenshotOrganizer.app"
         
         # Verify the app is properly signed
-        echo "Verifying code signature..."
+        echo "🔍 Verifying code signature..."
         codesign --verify --verbose=2 "$APP_PATH"
         spctl --assess --verbose=2 --type exec "$APP_PATH"
         
         # Create zip for notarization
-        echo "Creating archive for notarization..."
+        echo "📦 Creating archive for notarization..."
         ditto -c -k --keepParent "$APP_PATH" "ScreenshotOrganizer-notarization.zip"
         
         # Submit for notarization
-        echo "Submitting for notarization..."
+        echo "🚀 Submitting for notarization..."
         xcrun notarytool submit "ScreenshotOrganizer-notarization.zip" \
                        --apple-id "${{ secrets.APPLE_ID }}" \
                        --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}" \
@@ -136,13 +138,15 @@ jobs:
                        --timeout 10m
         
         # Staple the notarization to the app
-        echo "Stapling notarization..."
+        echo "📎 Stapling notarization..."
         xcrun stapler staple "$APP_PATH"
         
         # Verify notarization
-        echo "Verifying notarization..."
+        echo "✅ Verifying notarization..."
         xcrun stapler validate "$APP_PATH"
         spctl --assess --verbose=2 --type exec "$APP_PATH"
+        
+        echo "🎉 App successfully signed and notarized!"
         
         # Clean up notarization archive
         rm "ScreenshotOrganizer-notarization.zip"
