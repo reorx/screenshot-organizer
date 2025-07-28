@@ -28,6 +28,13 @@ A macOS menubar app that automatically organizes screenshot files and screen rec
 
 Each push to the main branch and every pull request automatically builds the app. You can download the latest build artifact from the [Actions page](https://github.com/reorx/screenshot-organizer/actions).
 
+**For tagged releases**: When a version tag (e.g., `v1.2.1`) is pushed, the workflow automatically:
+- Creates a properly named artifact (`ScreenshotOrganizer-v1.2.1.zip`)
+- Creates a GitHub release with the artifact attached
+- Generates release notes automatically
+
+See [GitHub Actions documentation](docs/github-actions.md) for more details.
+
 ## Building from Source
 
 1. Clone the repository
