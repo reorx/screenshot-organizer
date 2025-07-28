@@ -69,31 +69,48 @@ jobs:
         echo "App structure:"
         find release/ScreenshotOrganizer.app -type d -name "*Launcher*" || echo "No launcher directory found"
         
-        # Create zip file
-        cd release
-        zip -r ScreenshotOrganizer.zip ScreenshotOrganizer.app
-        cd ..
+        # Determine the artifact name based on whether this is a tag or not
+        if [[ "${{ github.ref_type }}" == "tag" ]]; then
+          ARTIFACT_NAME="ScreenshotOrganizer-${{ github.ref_name }}"
+          echo "Tagged release artifact will be: $ARTIFACT_NAME"
+        else
+          ARTIFACT_NAME="ScreenshotOrganizer-${{ github.sha }}"
+          echo "Development artifact will be: $ARTIFACT_NAME"
+        fi
         
-        # Move zip to root for easier access
-        mv release/ScreenshotOrganizer.zip ./
+        # Create dir with the determined name
+        mkdir "$ARTIFACT_NAME"
         
-        # Show final zip file info
-        ls -la ScreenshotOrganizer.zip
+        # move app to the artifact dir
+        mv "release/ScreenshotOrganizer.app" "$ARTIFACT_NAME"
+        
+        # Show final dir info
+        ls -ld "$ARTIFACT_NAME"
+        
+        # Store the artifact name for later steps
+        echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ScreenshotOrganizer-${{ github.sha }}
-        path: ScreenshotOrganizer.zip
+        name: ${{ github.ref_type == 'tag' && format('ScreenshotOrganizer-{0}', github.ref_name) || format('ScreenshotOrganizer-{0}', github.sha) }}
+        path: ${{ env.ARTIFACT_NAME }}
         retention-days: 30
     
     - name: Upload release asset (on tag)
       if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        # Create zip file for release asset
+        zip -r "$ARTIFACT_NAME.zip" "$ARTIFACT_NAME"
+    
+    - name: Create GitHub release (on tag)
+      if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
-        files: ScreenshotOrganizer.zip
+        files: ${{ env.ARTIFACT_NAME }}.zip
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
