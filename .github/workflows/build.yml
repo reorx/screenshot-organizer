@@ -72,34 +72,31 @@ jobs:
         # Determine the artifact name based on whether this is a tag or not
         if [[ "${{ github.ref_type }}" == "tag" ]]; then
           ARTIFACT_NAME="ScreenshotOrganizer-${{ github.ref_name }}.zip"
-          echo "Creating tagged release artifact: $ARTIFACT_NAME"
+          echo "Tagged release artifact will be: $ARTIFACT_NAME"
         else
           ARTIFACT_NAME="ScreenshotOrganizer.zip"
-          echo "Creating development artifact: $ARTIFACT_NAME"
+          echo "Development artifact will be: $ARTIFACT_NAME"
         fi
         
-        # Create zip file with the determined name
-        cd release
-        zip -r "$ARTIFACT_NAME" ScreenshotOrganizer.app
-        cd ..
-        
-        # Move zip to root for easier access
-        mv "release/$ARTIFACT_NAME" "./"
-        
-        # Show final zip file info
-        ls -la "$ARTIFACT_NAME"
-        
-        # Store the artifact name for later steps
+        # Store the artifact name for later steps (for release asset naming)
         echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ github.ref_type == 'tag' && format('ScreenshotOrganizer-{0}', github.ref_name) || format('ScreenshotOrganizer-{0}', github.sha) }}
-        path: ${{ env.ARTIFACT_NAME }}
+        path: release/ScreenshotOrganizer.app
         retention-days: 30
     
     - name: Upload release asset (on tag)
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        # Create zip file for release asset
+        cd release
+        zip -r "../$ARTIFACT_NAME" ScreenshotOrganizer.app
+        cd ..
+    
+    - name: Create GitHub release (on tag)
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
