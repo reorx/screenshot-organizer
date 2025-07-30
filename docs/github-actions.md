@@ -2,7 +2,7 @@
 
 ## Build and Package App Workflow
 
-This workflow automatically builds the ScreenshotOrganizer app and creates artifacts based on the type of commit.
+This workflow automatically builds the ScreenshotOrganizer app and creates artifacts based on the type of commit. When properly configured with code signing certificates, it also signs and notarizes the app for secure distribution.
 
 ### Triggers
 
@@ -71,3 +71,18 @@ git push origin master
 2. **Single Zip**: Eliminated confusing double-zip structure
 3. **Automatic Releases**: No manual intervention needed for releases
 4. **Consistent Artifacts**: Clear naming convention for all build types
+5. **Code Signing Support**: Automatically signs and notarizes apps when certificates are configured (see [Code Signing Documentation](code-signing.md))
+
+### Code Signing and Notarization
+
+The workflow supports automatic code signing and notarization when the following secrets are configured:
+- `DEVELOPER_ID_APPLICATION_CERT_P12_BASE64`
+- `DEVELOPER_ID_APPLICATION_CERT_PASSWORD`
+- `KEYCHAIN_PASSWORD`
+- `APPLE_ID`
+- `APPLE_APP_SPECIFIC_PASSWORD`
+- `APPLE_TEAM_ID`
+
+When configured, the app will be properly signed with a Developer ID certificate and notarized with Apple, eliminating Gatekeeper security warnings.
+
+For detailed setup instructions, see the [Code Signing Documentation](code-signing.md).

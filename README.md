@@ -24,9 +24,13 @@ A macOS menubar app that automatically organizes screenshot files and screen rec
 2. Extract the .zip file and drag the app to your Applications folder
 3. Launch the app
 
+**Note**: Properly signed releases are available when the repository owner has configured code signing certificates. If you encounter a "damaged app" error with unsigned builds, see the [Code Signing Documentation](docs/code-signing.md) for details.
+
 ### Build from GitHub Actions
 
 Each push to the main branch and every pull request automatically builds the app. You can download the latest build artifact from the [Actions page](https://github.com/reorx/screenshot-organizer/actions).
+
+**Important**: Apps built from GitHub Actions may trigger macOS Gatekeeper security warnings unless proper code signing is configured. See [Code Signing Documentation](docs/code-signing.md) for setup instructions.
 
 **For tagged releases**: When a version tag (e.g., `v1.2.1`) is pushed, the workflow automatically:
 - Creates a properly named artifact (`ScreenshotOrganizer-v1.2.1.zip`)
