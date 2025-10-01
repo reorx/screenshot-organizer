@@ -61,6 +61,8 @@ Similarly, screen recordings with the format `Screen Recording YYYY-MM-DD at HH.
 ## TODO
 
 - [ ] auto rename screenshots to configured naming template. this feature works independently, regardless of whether the folder organizing feature is enabled or not
+- [ ] image compression feature
+- [ ] show recent screenshots in the menbar menu dropdown, with sub menu to copy path or image content or open share menu
 
 ## License
 
