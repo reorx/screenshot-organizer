@@ -58,6 +58,10 @@ For example, a file named `Screenshot 2023-04-15 at 10.30.45.png` would be moved
 
 Similarly, screen recordings with the format `Screen Recording YYYY-MM-DD at HH.MM.SS.mov` are organized into `~/Desktop/recordings/YYYY/MM/Screen Recording YYYY-MM-DD at HH.MM.SS.mov`.
 
+## TODO
+
+- [ ] auto rename screenshots to configured naming template. this feature works independently, regardless of whether the folder organizing feature is enabled or not
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
