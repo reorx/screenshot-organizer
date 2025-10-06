@@ -20,5 +20,14 @@
 	<array>
 		<string>com.reorx.ScreenshotOrganizer.Launcher</string>
 	</array>
+	<!-- Hardened Runtime entitlements for notarization -->
+	<key>com.apple.security.cs.allow-jit</key>
+	<false/>
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<false/>
+	<key>com.apple.security.cs.allow-dyld-environment-variables</key>
+	<false/>
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<false/>
 </dict>
 </plist>
